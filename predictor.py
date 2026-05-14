@@ -10,6 +10,7 @@ class LotoPredictor:
         self.datos = datos_historicos
 
     def analizar_frecuencias(self):
+        
         todas_bolillas = []
         todos_plus = []
         

@@ -1,0 +1,43 @@
+[
+  {
+    "fecha_prediccion": "2026-05-06T09:37:40-03:00",
+    "fecha_sorteo_objetivo": "2026-05-06 (Miércoles)",
+    "juego": "Loto Plus",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET A",
+        "numeros": [1, 5, 28, 41, 43, 45],
+        "plus": 8
+      },
+      {
+        "nombre": "SÚPER TICKET B",
+        "numeros": [2, 11, 32, 33, 40, 44],
+        "plus": 9
+      },
+      {
+        "nombre": "SÚPER TICKET C",
+        "numeros": [13, 14, 22, 25, 34, 37],
+        "plus": 0
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-06T09:37:40-03:00",
+    "fecha_sorteo_objetivo": "2026-05-06 (Miércoles)",
+    "juego": "Quini 6",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET A",
+        "numeros": [3, 4, 5, 31, 35, 39]
+      },
+      {
+        "nombre": "SÚPER TICKET B",
+        "numeros": [0, 6, 10, 22, 32, 45]
+      },
+      {
+        "nombre": "SÚPER TICKET C",
+        "numeros": [1, 2, 9, 30, 36, 44]
+      }
+    ]
+  }
+]

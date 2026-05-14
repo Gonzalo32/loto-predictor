@@ -560,6 +560,105 @@ class LotoPredictor {
         if(seleccion.length===0) seleccion = [1,2,3,4,5,6];
         return { numeros: seleccion, plus: Math.floor(Math.random() * 10) };
     }
+    sugerirPorSecuenciaCondicional() {
+        if (!this.datos || this.datos.length < 10) return this.sugerirMixtoBalanceado();
+
+        const dataSorted = this.datos.map(d => this._extraerBolillas(d).sort((a, b) => a - b));
+        const countB1 = {};
+        dataSorted.forEach(b => countB1[b[0]] = (countB1[b[0]] || 0) + 1);
+
+        const getMostLikelyNext = (currentSelection) => {
+            const contextSize = currentSelection.length;
+            const freq = {};
+            
+            dataSorted.forEach(draw => {
+                // Check if draw matches current selection prefix
+                let match = true;
+                for (let i = 0; i < contextSize; i++) {
+                    if (draw[i] !== currentSelection[i]) {
+                        match = false;
+                        break;
+                    }
+                }
+                
+                if (match && draw.length > contextSize) {
+                    const nextVal = draw[contextSize];
+                    freq[nextVal] = (freq[nextVal] || 0) + 1;
+                }
+            });
+
+            const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+            if (sorted.length > 0) return parseInt(sorted[0][0], 10);
+            
+            // Fallback: try smaller context
+            if (contextSize > 1) {
+                return getMostLikelyNext(currentSelection.slice(1));
+            }
+
+            // Ultimate fallback: most frequent remaining number
+            let r;
+            do { r = Math.floor(Math.random() * 46); } while (currentSelection.includes(r));
+            return r;
+        };
+
+        const topB1 = Object.entries(countB1).sort((a, b) => b[1] - a[1])[0][0];
+        let seleccion = [parseInt(topB1, 10)];
+
+        for (let i = 1; i < 6; i++) {
+            let next = getMostLikelyNext(seleccion);
+            seleccion.push(next);
+            seleccion.sort((a, b) => a - b);
+        }
+
+        return { numeros: seleccion, plus: Math.floor(Math.random() * 10) };
+    }
+
+    sugerirPorEnsembleVotado() {
+        // Ejecuta todas las estrategias y hace un sistema de votación ponderado
+        // Dando más peso a las que históricamente rinden mejor
+        const estrategias = [
+            'sugerirPorMarkov', 'sugerirPorDelta', 'sugerirPorBalancePares', 
+            'sugerirPorSimilitud', 'sugerirPorAtraso', 'sugerirPorSecuenciaCondicional',
+            'sugerirPorTendenciaLineal', 'sugerirPorMitades', 'sugerirPorSumaDigitos'
+        ];
+
+        const votos = {};
+        const plusVotos = {};
+        
+        // Ponderación (esto se podría hacer dinámico evaluando en tiempo real)
+        const pesos = {
+            'sugerirPorSimilitud': 3,
+            'sugerirPorSecuenciaCondicional': 4, // El nuevo algoritmo tiene prioridad
+            'sugerirPorMarkov': 2,
+            'sugerirPorDelta': 1,
+            'sugerirPorBalancePares': 1
+        };
+
+        estrategias.forEach(est => {
+            let res;
+            if (est === 'sugerirPorMarkov' || est === 'sugerirPorSimilitud') {
+                const ul = this._extraerBolillas(this.datos[this.datos.length - 1]);
+                res = this[est](ul);
+            } else {
+                res = this[est]();
+            }
+
+            const p = pesos[est] || 1;
+            res.numeros.forEach(n => votos[n] = (votos[n] || 0) + p);
+            plusVotos[res.plus] = (plusVotos[res.plus] || 0) + p;
+        });
+
+        const topNumeros = Object.entries(votos)
+            .sort((a, b) => b[1] - a[1])
+            .map(x => parseInt(x[0], 10))
+            .slice(0, 6)
+            .sort((a, b) => a - b);
+
+        const topPlus = parseInt(Object.entries(plusVotos).sort((a, b) => b[1] - a[1])[0][0], 10);
+
+        return { numeros: topNumeros, plus: topPlus };
+    }
+
 
     evaluarEstrategia(nombreMetodo) {
         if (this.datos.length < 5) return { promedio: 0, detalles: [] };
