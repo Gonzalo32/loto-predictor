@@ -1,0 +1,204 @@
+{
+    "dataset": "Quini 6",
+    "total_sorteos_analizados": 817,
+    "top_12_numeros": [
+        0,
+        4,
+        6,
+        40,
+        41,
+        8,
+        34,
+        1,
+        5,
+        43,
+        13,
+        12
+    ],
+    "ranking_completo": [
+        {
+            "numero": 0,
+            "score": 0.8588
+        },
+        {
+            "numero": 4,
+            "score": 0.8128
+        },
+        {
+            "numero": 6,
+            "score": 0.7903
+        },
+        {
+            "numero": 40,
+            "score": 0.7198
+        },
+        {
+            "numero": 41,
+            "score": 0.6953
+        },
+        {
+            "numero": 8,
+            "score": 0.6801
+        },
+        {
+            "numero": 34,
+            "score": 0.6757
+        },
+        {
+            "numero": 1,
+            "score": 0.6701
+        },
+        {
+            "numero": 5,
+            "score": 0.6602
+        },
+        {
+            "numero": 43,
+            "score": 0.6475
+        },
+        {
+            "numero": 13,
+            "score": 0.6284
+        },
+        {
+            "numero": 12,
+            "score": 0.6197
+        },
+        {
+            "numero": 10,
+            "score": 0.6182
+        },
+        {
+            "numero": 20,
+            "score": 0.5649
+        },
+        {
+            "numero": 27,
+            "score": 0.563
+        },
+        {
+            "numero": 37,
+            "score": 0.5524
+        },
+        {
+            "numero": 18,
+            "score": 0.545
+        },
+        {
+            "numero": 7,
+            "score": 0.5199
+        },
+        {
+            "numero": 15,
+            "score": 0.4786
+        },
+        {
+            "numero": 11,
+            "score": 0.4682
+        },
+        {
+            "numero": 16,
+            "score": 0.4614
+        },
+        {
+            "numero": 24,
+            "score": 0.4579
+        },
+        {
+            "numero": 31,
+            "score": 0.4546
+        },
+        {
+            "numero": 44,
+            "score": 0.4545
+        },
+        {
+            "numero": 38,
+            "score": 0.4244
+        },
+        {
+            "numero": 33,
+            "score": 0.4229
+        },
+        {
+            "numero": 25,
+            "score": 0.3998
+        },
+        {
+            "numero": 22,
+            "score": 0.3957
+        },
+        {
+            "numero": 29,
+            "score": 0.3925
+        },
+        {
+            "numero": 9,
+            "score": 0.3838
+        },
+        {
+            "numero": 23,
+            "score": 0.3701
+        },
+        {
+            "numero": 28,
+            "score": 0.3445
+        },
+        {
+            "numero": 32,
+            "score": 0.3358
+        },
+        {
+            "numero": 21,
+            "score": 0.3337
+        },
+        {
+            "numero": 35,
+            "score": 0.3334
+        },
+        {
+            "numero": 19,
+            "score": 0.331
+        },
+        {
+            "numero": 2,
+            "score": 0.326
+        },
+        {
+            "numero": 39,
+            "score": 0.3257
+        },
+        {
+            "numero": 45,
+            "score": 0.3012
+        },
+        {
+            "numero": 36,
+            "score": 0.2952
+        },
+        {
+            "numero": 30,
+            "score": 0.2901
+        },
+        {
+            "numero": 26,
+            "score": 0.2581
+        },
+        {
+            "numero": 14,
+            "score": 0.24
+        },
+        {
+            "numero": 17,
+            "score": 0.2391
+        },
+        {
+            "numero": 3,
+            "score": 0.2194
+        },
+        {
+            "numero": 42,
+            "score": 0.1701
+        }
+    ]
+}
