@@ -131,7 +131,7 @@ def simular_backtest():
     if not datos_completos:
         return
         
-    inicio_idx = 100 # Empezamos a predecir a partir del sorteo 101
+    inicio_idx = 20 # Empezamos lo antes posible
     total_sorteos = len(datos_completos)
     
     aciertos_totales = {4: 0, 5: 0, 6: 0}
@@ -150,29 +150,35 @@ def simular_backtest():
         boletos_reducidos = [combo for combo in todas_combinaciones if es_ticket_perfecto(combo)]
         
         mejor_acierto = 0
+        boleto_ganador = None
         for boleto in boletos_reducidos:
             aciertos = len(set(boleto).intersection(sorteo_real))
             if aciertos > mejor_acierto:
                 mejor_acierto = aciertos
+                boleto_ganador = boleto
                 
         if mejor_acierto >= 4:
             aciertos_totales[mejor_acierto] = aciertos_totales.get(mejor_acierto, 0) + 1
+            if mejor_acierto == 6:
+                print(f"Sorteo {i} (Real {datos_completos[i]}): ¡6 ACIERTOS (JACKPOT)! Boleto: {boleto_ganador}")
+            elif mejor_acierto == 5:
+                print(f"Sorteo {i} (Real {datos_completos[i]}): ¡5 ACIERTOS! Boleto: {boleto_ganador}")
             
         sorteos_jugados += 1
         
         # Progreso cada 50 sorteos
         if sorteos_jugados % 50 == 0:
             print(f"Progreso: {sorteos_jugados}/{total_sorteos - inicio_idx} simulados. "
-                  f"Hits acumulados -> 4: {aciertos_totales.get(4,0)}, 5: {aciertos_totales.get(5,0)}, 6: {aciertos_totales.get(6,0)}")
+                  f"Hits -> 4: {aciertos_totales.get(4,0)}, 5: {aciertos_totales.get(5,0)}, 6: {aciertos_totales.get(6,0)}")
 
     print("\n" + "="*50)
-    print("🏆 RESULTADOS FINALES DEL BACKTESTING 🏆")
+    print("=== RESULTADOS FINALES DEL BACKTESTING ===")
     print("="*50)
     print(f"Sorteos Simulados: {sorteos_jugados}")
-    print(f"Promedio de boletos jugados por sorteo: ~{len(boletos_reducidos)} tickets (en el último paso).")
-    print(f"✅ Veces con un boleto de 4 Aciertos: {aciertos_totales.get(4, 0)}")
-    print(f"🔥 Veces con un boleto de 5 Aciertos: {aciertos_totales.get(5, 0)}")
-    print(f"👑 Veces con un boleto de 6 Aciertos: {aciertos_totales.get(6, 0)}")
+    print(f"Promedio de boletos jugados por sorteo: ~{len(boletos_reducidos)} tickets (en el ultimo paso).")
+    print(f"Veces con un boleto de 4 Aciertos: {aciertos_totales.get(4, 0)}")
+    print(f"Veces con un boleto de 5 Aciertos: {aciertos_totales.get(5, 0)}")
+    print(f"Veces con un boleto de 6 Aciertos: {aciertos_totales.get(6, 0)}")
     print("="*50)
 
 if __name__ == '__main__':

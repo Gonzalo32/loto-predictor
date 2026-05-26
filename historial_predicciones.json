@@ -6,17 +6,38 @@
     "tickets": [
       {
         "nombre": "SÚPER TICKET A",
-        "numeros": [1, 5, 28, 41, 43, 45],
+        "numeros": [
+          1,
+          5,
+          28,
+          41,
+          43,
+          45
+        ],
         "plus": 8
       },
       {
         "nombre": "SÚPER TICKET B",
-        "numeros": [2, 11, 32, 33, 40, 44],
+        "numeros": [
+          2,
+          11,
+          32,
+          33,
+          40,
+          44
+        ],
         "plus": 9
       },
       {
         "nombre": "SÚPER TICKET C",
-        "numeros": [13, 14, 22, 25, 34, 37],
+        "numeros": [
+          13,
+          14,
+          22,
+          25,
+          34,
+          37
+        ],
         "plus": 0
       }
     ]
@@ -28,15 +49,586 @@
     "tickets": [
       {
         "nombre": "SÚPER TICKET A",
-        "numeros": [3, 4, 5, 31, 35, 39]
+        "numeros": [
+          3,
+          4,
+          5,
+          31,
+          35,
+          39
+        ]
       },
       {
         "nombre": "SÚPER TICKET B",
-        "numeros": [0, 6, 10, 22, 32, 45]
+        "numeros": [
+          0,
+          6,
+          10,
+          22,
+          32,
+          45
+        ]
       },
       {
         "nombre": "SÚPER TICKET C",
-        "numeros": [1, 2, 9, 30, 36, 44]
+        "numeros": [
+          1,
+          2,
+          9,
+          30,
+          36,
+          44
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-20T11:40:01.556Z",
+    "fecha_sorteo_objetivo": "2026-05-20 (Miércoles)",
+    "juego": "Quini 6 (Modelo FFT + Markov)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET AVANZADO A",
+        "numeros": [
+          1,
+          5,
+          13,
+          34,
+          41,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET AVANZADO B",
+        "numeros": [
+          5,
+          8,
+          12,
+          34,
+          40,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET AVANZADO C",
+        "numeros": [
+          4,
+          8,
+          12,
+          34,
+          40,
+          43
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-22T10:42:00-03:00",
+    "fecha_sorteo_objetivo": "2026-05-24 (Domingo)",
+    "juego": "Quini 6 (Modelo V3 Pesos Dinámicos)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET A",
+        "numeros": [
+          3,
+          5,
+          21,
+          22,
+          25,
+          44
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET B",
+        "numeros": [
+          2,
+          9,
+          11,
+          31,
+          39,
+          45
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET C",
+        "numeros": [
+          0,
+          6,
+          8,
+          18,
+          23,
+          40
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-22T10:42:00-03:00",
+    "fecha_sorteo_objetivo": "2026-05-24 (Domingo)",
+    "juego": "Quini 6 (KNN Similitud)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET A",
+        "numeros": [
+          3,
+          5,
+          11,
+          18,
+          31,
+          38
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-22T11:21:00-03:00",
+    "fecha_sorteo_objetivo": "2026-05-24 (Domingo)",
+    "juego": "Quini 6 (FFT + Markov - Secuencial No Solapado)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET A",
+        "numeros": [
+          0,
+          4,
+          10,
+          13,
+          34,
+          40
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET B",
+        "numeros": [
+          6,
+          8,
+          12,
+          20,
+          41,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET C",
+        "numeros": [
+          1,
+          5,
+          15,
+          18,
+          27,
+          37
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-26T13:16:39.760Z",
+    "fecha_sorteo_objetivo": "2026-05-27 (Miércoles)",
+    "juego": "Quini 6 (Modelo FFT + Markov)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET AVANZADO A",
+        "numeros": [
+          0,
+          7,
+          13,
+          18,
+          37,
+          41
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET AVANZADO B",
+        "numeros": [
+          5,
+          7,
+          12,
+          27,
+          41,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET AVANZADO C",
+        "numeros": [
+          0,
+          5,
+          12,
+          18,
+          27,
+          37
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-26T10:36:01.304228",
+    "fecha_sorteo_objetivo": "2026-05-27 (Miercoles)",
+    "juego": "Quini 6 (Modelo FFT + Markov + Afinidad Apriori - 15 Tickets)",
+    "tickets": [
+      {
+        "nombre": "BOLETA AFINIDAD #01",
+        "numeros": [
+          0,
+          4,
+          12,
+          18,
+          27,
+          37
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #02",
+        "numeros": [
+          5,
+          9,
+          13,
+          18,
+          27,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #03",
+        "numeros": [
+          4,
+          7,
+          13,
+          18,
+          27,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #04",
+        "numeros": [
+          0,
+          4,
+          12,
+          18,
+          27,
+          41
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #05",
+        "numeros": [
+          5,
+          8,
+          18,
+          27,
+          37,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #06",
+        "numeros": [
+          5,
+          7,
+          13,
+          18,
+          27,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #07",
+        "numeros": [
+          5,
+          8,
+          13,
+          18,
+          27,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #08",
+        "numeros": [
+          7,
+          9,
+          13,
+          18,
+          27,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #09",
+        "numeros": [
+          5,
+          8,
+          12,
+          18,
+          27,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #10",
+        "numeros": [
+          5,
+          8,
+          18,
+          27,
+          41,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #11",
+        "numeros": [
+          4,
+          7,
+          12,
+          18,
+          27,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #12",
+        "numeros": [
+          0,
+          7,
+          12,
+          18,
+          27,
+          37
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #13",
+        "numeros": [
+          5,
+          7,
+          12,
+          18,
+          27,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #14",
+        "numeros": [
+          5,
+          9,
+          12,
+          18,
+          27,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA AFINIDAD #15",
+        "numeros": [
+          4,
+          7,
+          18,
+          27,
+          37,
+          43
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-26T11:29:33.153933",
+    "fecha_sorteo_objetivo": "2026-05-27 (Miércoles)",
+    "juego": "Quini 6 (Modelo V5 - 3 Tickets Jackpot p=0.00)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET JACKPOT A",
+        "numeros": [
+          0,
+          7,
+          12,
+          18,
+          27,
+          37
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET JACKPOT B",
+        "numeros": [
+          0,
+          4,
+          12,
+          18,
+          27,
+          37
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET JACKPOT C",
+        "numeros": [
+          0,
+          5,
+          12,
+          18,
+          27,
+          37
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-26T11:29:33.153961",
+    "fecha_sorteo_objetivo": "2026-05-27 (Miércoles)",
+    "juego": "Quini 6 (Modelo V5 - 3 Tickets Balanceado p=0.10)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET BALANCEADO A",
+        "numeros": [
+          0,
+          7,
+          12,
+          18,
+          27,
+          37
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET BALANCEADO B",
+        "numeros": [
+          5,
+          9,
+          13,
+          18,
+          27,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET BALANCEADO C",
+        "numeros": [
+          5,
+          12,
+          18,
+          27,
+          37,
+          43
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-26T11:53:56.373516",
+    "fecha_sorteo_objetivo": "2026-05-27 (Miércoles)",
+    "juego": "Quini 6 (Modelo V6 Optimo - 3 Tickets p=0.10)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET V6 OPTIMO A",
+        "numeros": [
+          5,
+          8,
+          11,
+          18,
+          27,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET V6 OPTIMO B",
+        "numeros": [
+          0,
+          7,
+          12,
+          18,
+          27,
+          37
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET V6 OPTIMO C",
+        "numeros": [
+          0,
+          4,
+          11,
+          18,
+          27,
+          41
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-26T12:42:06.070878",
+    "fecha_sorteo_objetivo": "2026-05-27 (Miércoles)",
+    "juego": "Quini 6 (Modelo V6.1 Optimo - 3 Tickets p=0.10)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET V6.1 OPTIMO A",
+        "numeros": [
+          5,
+          8,
+          11,
+          18,
+          27,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET V6.1 OPTIMO B",
+        "numeros": [
+          0,
+          7,
+          12,
+          18,
+          27,
+          37
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET V6.1 OPTIMO C",
+        "numeros": [
+          0,
+          4,
+          11,
+          18,
+          27,
+          41
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-26T13:01:03.397846",
+    "fecha_sorteo_objetivo": "2026-05-27 (Miércoles)",
+    "juego": "Quini 6 (Modelo ML Random Forest - 3 Tickets p=0.10)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET ML OPTIMO A",
+        "numeros": [
+          1,
+          4,
+          20,
+          33,
+          37,
+          40
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET ML OPTIMO B",
+        "numeros": [
+          1,
+          4,
+          16,
+          19,
+          38,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET ML OPTIMO C",
+        "numeros": [
+          1,
+          4,
+          25,
+          37,
+          41,
+          43
+        ]
       }
     ]
   }

@@ -83,7 +83,7 @@ if (jugadasReducidas.length > 15) {
     ticketsFinales = mezclados.slice(0, 15);
 }
 
-// 4. Mostrar los tickets
+// 4. Mostrar y Guardar los tickets
 console.log(`\n🎟️ TICKETS RECOMENDADOS PARA QUINI 6:\n`);
 
 ticketsFinales.forEach((ticket, idx) => {
@@ -91,5 +91,26 @@ ticketsFinales.forEach((ticket, idx) => {
     console.log(`   Boleta #${(idx+1).toString().padStart(2, '0')} : [ ${ticketStr} ]`);
 });
 
+// Guardar en historial_predicciones.json
+const historialPath = 'historial_predicciones.json';
+let historial = [];
+if (fs.existsSync(historialPath)) {
+    historial = JSON.parse(fs.readFileSync(historialPath, 'utf-8'));
+}
+
+const nuevaPrediccion = {
+    fecha_prediccion: new Date().toISOString(),
+    fecha_sorteo_objetivo: "2026-05-27 (Miércoles)",
+    juego: "Quini 6 (Modelo FFT + Markov)",
+    tickets: ticketsFinales.slice(0, 3).map((ticket, idx) => ({
+        nombre: `SÚPER TICKET AVANZADO ${String.fromCharCode(65 + idx)}`,
+        numeros: ticket
+    }))
+};
+
+historial.push(nuevaPrediccion);
+fs.writeFileSync(historialPath, JSON.stringify(historial, null, 2), 'utf-8');
+
+console.log(`\n✅ Predicción guardada exitosamente en historial_predicciones.json`);
 console.log(`\n==================================================`);
 console.log(`¡Suerte en el sorteo!`);

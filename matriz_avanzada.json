@@ -1,204 +1,204 @@
 {
     "dataset": "Quini 6",
-    "total_sorteos_analizados": 817,
+    "total_sorteos_analizados": 825,
     "top_12_numeros": [
         0,
-        4,
-        6,
-        40,
-        41,
-        8,
-        34,
-        1,
-        5,
         43,
+        5,
+        7,
+        41,
+        18,
+        27,
         13,
-        12
+        37,
+        12,
+        9,
+        4
     ],
     "ranking_completo": [
         {
             "numero": 0,
-            "score": 0.8588
-        },
-        {
-            "numero": 4,
-            "score": 0.8128
-        },
-        {
-            "numero": 6,
-            "score": 0.7903
-        },
-        {
-            "numero": 40,
-            "score": 0.7198
-        },
-        {
-            "numero": 41,
-            "score": 0.6953
-        },
-        {
-            "numero": 8,
-            "score": 0.6801
-        },
-        {
-            "numero": 34,
-            "score": 0.6757
-        },
-        {
-            "numero": 1,
-            "score": 0.6701
-        },
-        {
-            "numero": 5,
-            "score": 0.6602
+            "score": 0.7878
         },
         {
             "numero": 43,
-            "score": 0.6475
+            "score": 0.7592
         },
         {
-            "numero": 13,
-            "score": 0.6284
-        },
-        {
-            "numero": 12,
-            "score": 0.6197
-        },
-        {
-            "numero": 10,
-            "score": 0.6182
-        },
-        {
-            "numero": 20,
-            "score": 0.5649
-        },
-        {
-            "numero": 27,
-            "score": 0.563
-        },
-        {
-            "numero": 37,
-            "score": 0.5524
-        },
-        {
-            "numero": 18,
-            "score": 0.545
+            "numero": 5,
+            "score": 0.7244
         },
         {
             "numero": 7,
-            "score": 0.5199
+            "score": 0.7036
         },
         {
-            "numero": 15,
-            "score": 0.4786
+            "numero": 41,
+            "score": 0.6571
         },
         {
-            "numero": 11,
-            "score": 0.4682
+            "numero": 18,
+            "score": 0.6569
         },
         {
-            "numero": 16,
-            "score": 0.4614
+            "numero": 27,
+            "score": 0.6512
         },
         {
-            "numero": 24,
-            "score": 0.4579
+            "numero": 13,
+            "score": 0.6231
         },
         {
-            "numero": 31,
-            "score": 0.4546
+            "numero": 37,
+            "score": 0.6177
         },
         {
-            "numero": 44,
-            "score": 0.4545
-        },
-        {
-            "numero": 38,
-            "score": 0.4244
-        },
-        {
-            "numero": 33,
-            "score": 0.4229
-        },
-        {
-            "numero": 25,
-            "score": 0.3998
-        },
-        {
-            "numero": 22,
-            "score": 0.3957
-        },
-        {
-            "numero": 29,
-            "score": 0.3925
+            "numero": 12,
+            "score": 0.6095
         },
         {
             "numero": 9,
-            "score": 0.3838
+            "score": 0.5843
         },
         {
-            "numero": 23,
-            "score": 0.3701
+            "numero": 4,
+            "score": 0.5791
         },
         {
-            "numero": 28,
-            "score": 0.3445
+            "numero": 8,
+            "score": 0.5693
         },
         {
-            "numero": 32,
-            "score": 0.3358
+            "numero": 11,
+            "score": 0.5616
         },
         {
-            "numero": 21,
-            "score": 0.3337
+            "numero": 29,
+            "score": 0.5524
         },
         {
-            "numero": 35,
-            "score": 0.3334
+            "numero": 15,
+            "score": 0.5504
         },
         {
-            "numero": 19,
-            "score": 0.331
+            "numero": 34,
+            "score": 0.4867
         },
         {
-            "numero": 2,
-            "score": 0.326
+            "numero": 1,
+            "score": 0.486
         },
         {
-            "numero": 39,
-            "score": 0.3257
+            "numero": 22,
+            "score": 0.4809
         },
         {
-            "numero": 45,
-            "score": 0.3012
+            "numero": 10,
+            "score": 0.4544
         },
         {
-            "numero": 36,
-            "score": 0.2952
+            "numero": 24,
+            "score": 0.4532
+        },
+        {
+            "numero": 6,
+            "score": 0.4427
         },
         {
             "numero": 30,
-            "score": 0.2901
+            "score": 0.4405
         },
         {
-            "numero": 26,
-            "score": 0.2581
+            "numero": 25,
+            "score": 0.4043
+        },
+        {
+            "numero": 2,
+            "score": 0.4
+        },
+        {
+            "numero": 38,
+            "score": 0.3949
+        },
+        {
+            "numero": 40,
+            "score": 0.3932
+        },
+        {
+            "numero": 35,
+            "score": 0.3457
+        },
+        {
+            "numero": 39,
+            "score": 0.3423
+        },
+        {
+            "numero": 23,
+            "score": 0.3391
         },
         {
             "numero": 14,
-            "score": 0.24
-        },
-        {
-            "numero": 17,
-            "score": 0.2391
+            "score": 0.3384
         },
         {
             "numero": 3,
-            "score": 0.2194
+            "score": 0.3326
+        },
+        {
+            "numero": 21,
+            "score": 0.3305
+        },
+        {
+            "numero": 31,
+            "score": 0.3249
+        },
+        {
+            "numero": 16,
+            "score": 0.3226
+        },
+        {
+            "numero": 26,
+            "score": 0.3215
+        },
+        {
+            "numero": 20,
+            "score": 0.3187
+        },
+        {
+            "numero": 19,
+            "score": 0.3119
+        },
+        {
+            "numero": 36,
+            "score": 0.3022
+        },
+        {
+            "numero": 17,
+            "score": 0.3012
+        },
+        {
+            "numero": 45,
+            "score": 0.2916
+        },
+        {
+            "numero": 28,
+            "score": 0.289
         },
         {
             "numero": 42,
-            "score": 0.1701
+            "score": 0.2856
+        },
+        {
+            "numero": 32,
+            "score": 0.2625
+        },
+        {
+            "numero": 33,
+            "score": 0.2549
+        },
+        {
+            "numero": 44,
+            "score": 0.2361
         }
     ]
 }
