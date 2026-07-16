@@ -631,5 +631,1059 @@
         ]
       }
     ]
+  },
+  {
+    "fecha_prediccion": "2026-05-28T14:43:03.621446",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Modelo ML RandomForest v2 - 3 Tickets p=0.15)",
+    "top_numeros": [
+      1,
+      2,
+      4,
+      10,
+      14,
+      16,
+      21,
+      23,
+      25,
+      31,
+      35,
+      39,
+      41,
+      43
+    ],
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET ML V2 A",
+        "numeros": [
+          4,
+          14,
+          23,
+          31,
+          39,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET ML V2 B",
+        "numeros": [
+          1,
+          2,
+          4,
+          10,
+          16,
+          21
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET ML V2 C",
+        "numeros": [
+          16,
+          21,
+          23,
+          25,
+          31,
+          39
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-28T17:50:57.863Z",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Modelo Genético Multi-Restricción - 3 Tickets)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET GA A",
+        "numeros": [
+          9,
+          17,
+          19,
+          35,
+          42,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET GA B",
+        "numeros": [
+          12,
+          15,
+          16,
+          20,
+          37,
+          39
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET GA C",
+        "numeros": [
+          2,
+          6,
+          10,
+          18,
+          33,
+          34
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-28T17:51:20.131Z",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Modelo Ensemble Dinámico - 3 Tickets)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET ENSEMBLE A",
+        "numeros": [
+          3,
+          9,
+          12,
+          23,
+          25,
+          39
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET ENSEMBLE B",
+        "numeros": [
+          5,
+          13,
+          28,
+          35,
+          36,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET ENSEMBLE C",
+        "numeros": [
+          5,
+          9,
+          11,
+          12,
+          16,
+          36
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-28T17:51:44.868Z",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Modelo Genético Multi-Restricción - 3 Tickets)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET GA A",
+        "numeros": [
+          9,
+          17,
+          19,
+          35,
+          42,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET GA B",
+        "numeros": [
+          6,
+          10,
+          15,
+          16,
+          20,
+          37
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET GA C",
+        "numeros": [
+          2,
+          12,
+          18,
+          33,
+          39,
+          44
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-29T09:13:08.229821",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Modelo ML Avanzado HistGBDT - pool=14 p=0.15)",
+    "top_numeros": [
+      1,
+      5,
+      7,
+      9,
+      11,
+      14,
+      22,
+      23,
+      29,
+      30,
+      31,
+      32,
+      35,
+      40
+    ],
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET ML AVANZADO A",
+        "numeros": [
+          5,
+          9,
+          14,
+          23,
+          29,
+          31
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET ML AVANZADO B",
+        "numeros": [
+          1,
+          5,
+          9,
+          22,
+          29,
+          32
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET ML AVANZADO C",
+        "numeros": [
+          5,
+          9,
+          11,
+          14,
+          22,
+          31
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-29T09:13:41.077020",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Modelo ML Avanzado HistGBDT - pool=16 p=0.2)",
+    "top_numeros": [
+      1,
+      5,
+      7,
+      9,
+      11,
+      12,
+      14,
+      22,
+      23,
+      29,
+      30,
+      31,
+      32,
+      35,
+      40,
+      43
+    ],
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET ML AVANZADO A",
+        "numeros": [
+          5,
+          9,
+          12,
+          14,
+          29,
+          31
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET ML AVANZADO B",
+        "numeros": [
+          5,
+          9,
+          12,
+          14,
+          23,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET ML AVANZADO C",
+        "numeros": [
+          5,
+          9,
+          12,
+          23,
+          29,
+          32
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-05-29T16:36:07.513Z",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Modelo Genético Multi-Restricción - 3 Tickets)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET GA A",
+        "numeros": [
+          9,
+          17,
+          19,
+          35,
+          42,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET GA B",
+        "numeros": [
+          12,
+          15,
+          16,
+          20,
+          37,
+          39
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET GA C",
+        "numeros": [
+          2,
+          6,
+          10,
+          18,
+          33,
+          34
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-06-01T11:57:20.144Z",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Modelo Genético Multi-Restricción - 3 Tickets)",
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET GA A",
+        "numeros": [
+          9,
+          15,
+          17,
+          19,
+          20,
+          43
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET GA B",
+        "numeros": [
+          2,
+          6,
+          10,
+          12,
+          37,
+          39
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET GA C",
+        "numeros": [
+          13,
+          17,
+          18,
+          24,
+          34,
+          44
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-06-01T14:31:19.216Z",
+    "fecha_sorteo_objetivo": "Miércoles, 3 de Junio de 2026",
+    "juego": "Quini 6 (Red Neuronal MLP + Rueda Greedy 15)",
+    "pool_12_numeros": [
+      13,
+      15,
+      18,
+      19,
+      20,
+      24,
+      28,
+      29,
+      33,
+      37,
+      39,
+      45
+    ],
+    "tickets": [
+      {
+        "nombre": "BOLETA NN-RUEDA A",
+        "numeros": [
+          13,
+          15,
+          18,
+          20,
+          24,
+          33
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA B",
+        "numeros": [
+          13,
+          19,
+          28,
+          37,
+          39,
+          45
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA C",
+        "numeros": [
+          15,
+          18,
+          20,
+          29,
+          37,
+          39
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA D",
+        "numeros": [
+          15,
+          19,
+          24,
+          29,
+          33,
+          45
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA E",
+        "numeros": [
+          15,
+          24,
+          28,
+          33,
+          37,
+          39
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA F",
+        "numeros": [
+          13,
+          15,
+          18,
+          20,
+          28,
+          45
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA G",
+        "numeros": [
+          13,
+          15,
+          18,
+          20,
+          29,
+          33
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA H",
+        "numeros": [
+          13,
+          15,
+          18,
+          20,
+          24,
+          37
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA I",
+        "numeros": [
+          13,
+          15,
+          18,
+          20,
+          24,
+          39
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA J",
+        "numeros": [
+          13,
+          15,
+          18,
+          20,
+          24,
+          45
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA K",
+        "numeros": [
+          13,
+          15,
+          18,
+          20,
+          28,
+          33
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA L",
+        "numeros": [
+          13,
+          15,
+          18,
+          20,
+          28,
+          37
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA M",
+        "numeros": [
+          13,
+          15,
+          18,
+          20,
+          28,
+          39
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA N",
+        "numeros": [
+          13,
+          15,
+          18,
+          20,
+          29,
+          37
+        ]
+      },
+      {
+        "nombre": "BOLETA NN-RUEDA O",
+        "numeros": [
+          13,
+          15,
+          18,
+          20,
+          29,
+          39
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-06-02T13:53:52.252Z",
+    "fecha_sorteo_objetivo": "Miércoles, 3 de Junio de 2026",
+    "juego": "Quini 6 (Super-Ensemble Dinámico Autocalibrado - 15 Boletas)",
+    "pool_12_numeros": [
+      5,
+      15,
+      19,
+      20,
+      21,
+      24,
+      28,
+      29,
+      37,
+      41,
+      43,
+      44
+    ],
+    "pesos_modelos": {
+      "Red Neuronal MLP": 1.65,
+      "GBDT Avanzado": 1.75,
+      "KNN Matcher": 1.3
+    },
+    "tickets": [
+      {
+        "nombre": "BOLETA ENS-RUEDA A",
+        "numeros": [
+          5,
+          15,
+          19,
+          21,
+          24,
+          28
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA B",
+        "numeros": [
+          5,
+          20,
+          29,
+          37,
+          41,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA C",
+        "numeros": [
+          15,
+          19,
+          21,
+          29,
+          37,
+          44
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA D",
+        "numeros": [
+          15,
+          20,
+          24,
+          28,
+          41,
+          44
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA E",
+        "numeros": [
+          15,
+          19,
+          21,
+          24,
+          41,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA F",
+        "numeros": [
+          5,
+          15,
+          24,
+          28,
+          37,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA G",
+        "numeros": [
+          5,
+          15,
+          19,
+          24,
+          29,
+          44
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA H",
+        "numeros": [
+          5,
+          15,
+          19,
+          21,
+          24,
+          29
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA I",
+        "numeros": [
+          5,
+          15,
+          19,
+          21,
+          24,
+          37
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA J",
+        "numeros": [
+          5,
+          15,
+          19,
+          21,
+          24,
+          41
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA K",
+        "numeros": [
+          5,
+          15,
+          19,
+          21,
+          24,
+          43
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA L",
+        "numeros": [
+          5,
+          15,
+          19,
+          21,
+          24,
+          44
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA M",
+        "numeros": [
+          5,
+          15,
+          19,
+          21,
+          28,
+          37
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA N",
+        "numeros": [
+          5,
+          15,
+          19,
+          21,
+          28,
+          41
+        ]
+      },
+      {
+        "nombre": "BOLETA ENS-RUEDA O",
+        "numeros": [
+          5,
+          15,
+          19,
+          21,
+          28,
+          43
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-06-09T12:43:24.038487",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miercoles)",
+    "juego": "Quini 6 (Modelo Hibrido GBDT-Clique Optimo - pool=12 w_n=0.4 p=1.2)",
+    "top_numeros": [
+      0,
+      4,
+      7,
+      9,
+      17,
+      20,
+      25,
+      27,
+      28,
+      29,
+      31,
+      36
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET HIBRIDO OPTIMO A",
+        "numeros": [
+          0,
+          4,
+          17,
+          20,
+          25,
+          36
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET HIBRIDO OPTIMO B",
+        "numeros": [
+          7,
+          9,
+          17,
+          27,
+          28,
+          36
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET HIBRIDO OPTIMO C",
+        "numeros": [
+          0,
+          7,
+          17,
+          25,
+          28,
+          31
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-06-09T13:26:27.655378",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miercoles)",
+    "juego": "Quini 6 (Modelo Hibrido GBDT-Clique Optimo Absoluto - pool=8 w_n=0.8 p=1.2)",
+    "top_numeros": [
+      0,
+      4,
+      7,
+      17,
+      25,
+      27,
+      29,
+      36
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET HIBRIDO OPTIMO ABSOLUTO A",
+        "numeros": [
+          4,
+          7,
+          17,
+          25,
+          27,
+          36
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET HIBRIDO OPTIMO ABSOLUTO B",
+        "numeros": [
+          0,
+          7,
+          17,
+          25,
+          29,
+          36
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET HIBRIDO OPTIMO ABSOLUTO C",
+        "numeros": [
+          0,
+          4,
+          17,
+          27,
+          29,
+          36
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-06-09T14:32:06.999351",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miercoles)",
+    "juego": "Quini 6 (Modelo Hibrido GBDT-Clique Ultra Optimo - pool=7 w_n=0.5 p=1.6 cov=PairCov)",
+    "top_numeros": [
+      0,
+      4,
+      7,
+      17,
+      25,
+      27,
+      36
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET HIBRIDO ULTRA OPTIMO A",
+        "numeros": [
+          4,
+          7,
+          17,
+          25,
+          27,
+          36
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET HIBRIDO ULTRA OPTIMO B",
+        "numeros": [
+          0,
+          4,
+          17,
+          25,
+          27,
+          36
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET HIBRIDO ULTRA OPTIMO C",
+        "numeros": [
+          0,
+          7,
+          17,
+          25,
+          27,
+          36
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-06-10T09:57:24.522924",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miercoles)",
+    "juego": "Quini 6 (Modelo Hibrido GBDT-Clique Ultra Optimo con 19 Features - pool=7 w_n=0.5 p=1.6 cov=PairCov)",
+    "top_numeros": [
+      4,
+      7,
+      11,
+      25,
+      27,
+      29,
+      36
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET HIBRIDO ULTRA OPTIMO A",
+        "numeros": [
+          4,
+          11,
+          25,
+          27,
+          29,
+          36
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET HIBRIDO ULTRA OPTIMO B",
+        "numeros": [
+          4,
+          7,
+          11,
+          27,
+          29,
+          36
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET HIBRIDO ULTRA OPTIMO C",
+        "numeros": [
+          4,
+          7,
+          11,
+          25,
+          27,
+          36
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-06-18T12:56:54.801078",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Modelo Neural Network MLP - pool=14 p=0.15)",
+    "top_numeros": [
+      1,
+      10,
+      13,
+      18,
+      20,
+      23,
+      26,
+      27,
+      28,
+      32,
+      33,
+      37,
+      40,
+      45
+    ],
+    "tickets": [
+      {
+        "nombre": "SÚPER TICKET NN MLP A",
+        "numeros": [
+          1,
+          10,
+          18,
+          20,
+          27,
+          37
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET NN MLP B",
+        "numeros": [
+          13,
+          23,
+          26,
+          28,
+          33,
+          45
+        ]
+      },
+      {
+        "nombre": "SÚPER TICKET NN MLP C",
+        "numeros": [
+          1,
+          10,
+          23,
+          32,
+          33,
+          40
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-06-18T12:58:13.726550",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miercoles)",
+    "juego": "Quini 6 (Modelo Hibrido GBDT-Clique Ultra Optimo con 19 Features - pool=7 w_n=0.5 p=1.6 cov=PairCov)",
+    "top_numeros": [
+      4,
+      14,
+      16,
+      25,
+      38,
+      39,
+      44
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET HIBRIDO ULTRA OPTIMO A",
+        "numeros": [
+          4,
+          14,
+          25,
+          38,
+          39,
+          44
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET HIBRIDO ULTRA OPTIMO B",
+        "numeros": [
+          4,
+          16,
+          25,
+          38,
+          39,
+          44
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET HIBRIDO ULTRA OPTIMO C",
+        "numeros": [
+          4,
+          14,
+          16,
+          25,
+          38,
+          39
+        ]
+      }
+    ]
   }
 ]

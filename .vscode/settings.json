@@ -1,0 +1,11 @@
+{
+  "python.defaultInterpreterPath": "C:\\Users\\Administrador\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+  "python.pythonPath": "C:\\Users\\Administrador\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+  "python.analysis.pythonPath": "C:\\Users\\Administrador\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+  "python.analysis.extraPaths": [
+    "C:\\Users\\Administrador\\Desktop\\lot",
+    "C:\\Users\\Administrador\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages"
+  ],
+  "python.analysis.typeCheckingMode": "off",
+  "python.analysis.diagnosticMode": "off"
+}

@@ -1,0 +1,49 @@
+{
+  "fecha_prediccion": "2026-06-18T12:58:13.726550",
+  "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miercoles)",
+  "juego": "Quini 6 (Modelo Hibrido GBDT-Clique Ultra Optimo con 19 Features - pool=7 w_n=0.5 p=1.6 cov=PairCov)",
+  "top_numeros": [
+    4,
+    14,
+    16,
+    25,
+    38,
+    39,
+    44
+  ],
+  "tickets": [
+    {
+      "nombre": "SUPER TICKET HIBRIDO ULTRA OPTIMO A",
+      "numeros": [
+        4,
+        14,
+        25,
+        38,
+        39,
+        44
+      ]
+    },
+    {
+      "nombre": "SUPER TICKET HIBRIDO ULTRA OPTIMO B",
+      "numeros": [
+        4,
+        16,
+        25,
+        38,
+        39,
+        44
+      ]
+    },
+    {
+      "nombre": "SUPER TICKET HIBRIDO ULTRA OPTIMO C",
+      "numeros": [
+        4,
+        14,
+        16,
+        25,
+        38,
+        39
+      ]
+    }
+  ]
+}
