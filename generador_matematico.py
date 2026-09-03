@@ -34,7 +34,7 @@ def load_data(filepath="historico_quini_completo.csv"):
     draws.sort(key=lambda x: (x['sorteo'], modality_order.get(x['modalidad'], 9)))
     return draws
 
-def es_ticket_valido_matematico(ticket, recent_numbers, last_draw_numbers, hot_numbers):
+def es_ticket_valido_matematico(ticket, last_draw_numbers, hot_numbers):
     ticket = sorted(ticket)
     
     # 1. Paridad: entre 2 y 4 números pares (evita extremos raros de 0 o 6 pares)
@@ -110,7 +110,7 @@ def generar_sugerencias():
     
     sugerencias = []
     intentos = 0
-    max_intentos = 1000000
+    max_intentos = 10000
     
     # We want 3 unique valid tickets
     while len(sugerencias) < 3 and intentos < max_intentos:
@@ -120,7 +120,7 @@ def generar_sugerencias():
         selected_cold = random.sample(cold_numbers, 2)
         candidate = sorted([int(x) for x in list(selected_hot) + list(selected_cold)])
         
-        if es_ticket_valido_matematico(candidate, None, last_draw_numbers, set(hot_numbers)):
+        if es_ticket_valido_matematico(candidate, last_draw_numbers, set(hot_numbers)):
             tup = tuple(candidate)
             if tup not in sugerencias:
                 sugerencias.append(tup)

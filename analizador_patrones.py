@@ -98,16 +98,6 @@ def suma_total(nums):
 def spread(nums):
     return max(nums) - min(nums)
 
-def decenas(nums):
-    d = defaultdict(int)
-    for n in nums:
-        d[n // 10] += 1
-    return dict(d)
-
-def consecutivos(nums):
-    s = sorted(nums)
-    return sum(1 for i in range(1, len(s)) if s[i] - s[i-1] == 1)
-
 # ─────────────────────────────────────────────────────────────────────────────
 # 3. ALGORITMOS DE PREDICCIÓN (score para cada número 0..45)
 # ─────────────────────────────────────────────────────────────────────────────
@@ -358,7 +348,6 @@ def analisis_estadistico_completo(sorteos):
         print(f"  Nº {n:02d}: aparece {cnt} veces | gap medio={mean:.1f} sorteos | std={std:.2f}")
 
     # 4.9 Patrones por mes/día de semana
-    from collections import OrderedDict
     meses = defaultdict(list)
     for s in sorteos:
         mes = int(s['fecha'].split('-')[1])

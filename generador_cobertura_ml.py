@@ -1,9 +1,10 @@
 import csv
+import json
 import numpy as np
 import itertools
 import os
 import sys
-import random
+from datetime import datetime
 from collections import defaultdict, Counter
 import warnings
 
@@ -13,11 +14,19 @@ os.environ["LIGHTGBM_VERBOSE"] = "-1"
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
 
 # Define models with high performance hyper-parameters (Class-Weighted Ensemble for minority positive class)
 clf_xgb = XGBClassifier(n_estimators=100, learning_rate=0.05, max_depth=4, scale_pos_weight=6.0, use_label_encoder=False, eval_metric='logloss', verbosity=0, random_state=42, n_jobs=-1)
 clf_lgb = LGBMClassifier(n_estimators=100, learning_rate=0.05, max_depth=4, num_leaves=15, scale_pos_weight=6.0, verbose=-1, random_state=42, n_jobs=-1)
 clf_cat = CatBoostClassifier(iterations=150, learning_rate=0.05, depth=4, auto_class_weights='Balanced', logging_level='Silent', random_state=42, thread_count=-1)
+clf_rf  = RandomForestClassifier(n_estimators=100, max_depth=6, class_weight='balanced', random_state=42, n_jobs=-1)
+clf_mlp = MLPClassifier(hidden_layer_sizes=(64, 32), max_iter=200, random_state=42, early_stopping=True)
+clf_meta = LogisticRegression(random_state=42)
+
 
 def load_data(filepath='c:/Users/Administrador/Desktop/lot/historico_quini_completo.csv'):
     draws = []
@@ -206,10 +215,14 @@ def extract_features_for_step(draws, t, transition_counts, transition2_counts, t
             trans_mod_score /= 6.0
             
         # 4. Frequencies
+        freq_5 = sum(1 for d in history[-5:] if n in d['numbers']) / 5.0 if n_history >= 5 else sum(1 for d in history if n in d['numbers']) / (n_history + 1e-5)
+        freq_10 = sum(1 for d in history[-10:] if n in d['numbers']) / 10.0 if n_history >= 10 else sum(1 for d in history if n in d['numbers']) / (n_history + 1e-5)
         freq_20 = sum(1 for d in history[-20:] if n in d['numbers']) / 20.0 if n_history >= 20 else sum(1 for d in history if n in d['numbers']) / (n_history + 1e-5)
+        freq_25 = sum(1 for d in history[-25:] if n in d['numbers']) / 25.0 if n_history >= 25 else sum(1 for d in history if n in d['numbers']) / (n_history + 1e-5)
         freq_50 = sum(1 for d in history[-50:] if n in d['numbers']) / 50.0 if n_history >= 50 else sum(1 for d in history if n in d['numbers']) / (n_history + 1e-5)
         freq_100 = sum(1 for d in history[-100:] if n in d['numbers']) / 100.0 if n_history >= 100 else sum(1 for d in history if n in d['numbers']) / (n_history + 1e-5)
         
+        z_delay = (delay - mean_delays[n]) / (std_delays[n] + 1e-5)
         mod_freq_10 = sum(1 for d in mod_history[-10:] if n in d['numbers']) / 10.0 if n_mod_history >= 10 else sum(1 for d in mod_history if n in d['numbers']) / (n_mod_history + 1e-5)
         mod_freq_30 = sum(1 for d in mod_history[-30:] if n in d['numbers']) / 30.0 if n_mod_history >= 30 else sum(1 for d in mod_history if n in d['numbers']) / (n_mod_history + 1e-5)
         
@@ -228,68 +241,24 @@ def extract_features_for_step(draws, t, transition_counts, transition2_counts, t
         if n_history == 0:
             fft_energy = 0.0
         else:
-            # Optimized O(1) FFT Energy using Parseval's theorem:
-            # sum(|X[k]|^2) = N * sum(|x[n]|^2) = N^2 * p * (1 - p)
-            # where p is the frequency of the number in history.
             freq_all = sum(1 for d in history if n in d['numbers']) / n_history
             fft_energy = float(n_history * n_history * freq_all * (1.0 - freq_all))
             
         features[n] = [
-            delay, delay_ratio, mean_delays[n], std_delays[n],
+            delay, delay_ratio, z_delay, mean_delays[n], std_delays[n],
             mod_delay,
             trans_score, trans_score_lag2, trans_mod_score,
             lags[n][0], lags[n][1], lags[n][2], lags[n][3], lags[n][4], lags[n][5], lags[n][6], lags[n][7],
             ewma_3[n], ewma_10[n], ewma_30[n],
-            freq_20, freq_50, freq_100,
+            freq_5, freq_10, freq_20, freq_25, freq_50, freq_100,
             mod_freq_10, mod_freq_30,
             mod_numeric,
             crossover, entropy, fft_energy
         ]
+
         
     return features
 
-def optimizar_cobertura_greedy(boletos_viables, pool_numbers, n_tickets=15):
-    # Genera todos los cuartetos posibles dentro de los 22 números elegidos
-    uncovered_subsets = set(itertools.combinations(sorted(pool_numbers), 4))
-    total_subsets = len(uncovered_subsets)
-    
-    ticket_subsets = []
-    for b in boletos_viables:
-        subsets = set(itertools.combinations(sorted(b), 4))
-        ticket_subsets.append((b, subsets))
-        
-    selected_tickets = []
-    covered_count = 0
-    
-    for _ in range(n_tickets):
-        if not uncovered_subsets or not ticket_subsets:
-            break
-            
-        best_ticket = None
-        best_subsets = None
-        best_overlap_count = -1
-        
-        for b, subsets in ticket_subsets:
-            overlap_count = len(subsets.intersection(uncovered_subsets))
-            if overlap_count > best_overlap_count:
-                best_overlap_count = overlap_count
-                best_ticket = b
-                best_subsets = subsets
-                
-        if best_ticket is not None and best_overlap_count > 0:
-            selected_tickets.append(best_ticket)
-            uncovered_subsets.difference_update(best_subsets)
-            covered_count += best_overlap_count
-            ticket_subsets = [(b, subs) for b, subs in ticket_subsets if b != best_ticket]
-        else:
-            if ticket_subsets:
-                selected_tickets.append(ticket_subsets[0][0])
-                ticket_subsets.pop(0)
-            else:
-                break
-                
-    pct_cobertura = (covered_count / total_subsets) * 100
-    return selected_tickets, pct_cobertura
 
 def prob_hits_poisson_binomial_flat(p):
     p0, p1, p2, p3, p4, p5 = p
@@ -413,44 +382,67 @@ def main():
     for i in range(n_draws):
         update_transition_counts(draws, i, transition_counts, transition2_counts, transition_mod_counts)
         
-    # Construir conjunto de entrenamiento con todo el histórico
+    # Construir conjunto de entrenamiento con el histórico reciente (últimos 250 sorteos)
     print("Construyendo base de características de entrenamiento...")
     X_train_list = []
     y_train_list = []
-    for i in range(20, n_draws):
+    start_train = max(20, n_draws - 250)
+    for i in range(start_train, n_draws):
         feats_i = extract_features_for_step(draws, i, transition_counts, transition2_counts, transition_mod_counts, draws[i]['modalidad'])
         real_draw_i = set(draws[i]['numbers'])
         for n in range(46):
             X_train_list.append(feats_i[n])
             y_train_list.append(1 if n in real_draw_i else 0)
+
             
     X_train = np.array(X_train_list)
     y_train = np.array(y_train_list)
     
     # Entrenar modelos de ML
-    print("Entrenando modelos de Machine Learning (XGBoost, LightGBM, CatBoost)...")
+    print("Entrenando Super-Ensemble de ML (XGBoost, LightGBM, CatBoost, RandomForest, Neural Network MLP)...")
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    
     clf_xgb.fit(X_train, y_train)
     clf_lgb.fit(X_train, y_train)
     clf_cat.fit(X_train, y_train)
-    print("Modelos entrenados correctamente.")
+    clf_rf.fit(X_train, y_train)
+    clf_mlp.fit(X_train_scaled, y_train)
+    
+    # Generar Meta-Features para Stacking
+    preds_xgb_tr = clf_xgb.predict_proba(X_train)[:, 1]
+    preds_lgb_tr = clf_lgb.predict_proba(X_train)[:, 1]
+    preds_cat_tr = clf_cat.predict_proba(X_train)[:, 1]
+    preds_rf_tr  = clf_rf.predict_proba(X_train)[:, 1]
+    preds_mlp_tr = clf_mlp.predict_proba(X_train_scaled)[:, 1]
+    
+    X_meta_train = np.column_stack([preds_xgb_tr, preds_lgb_tr, preds_cat_tr, preds_rf_tr, preds_mlp_tr])
+    clf_meta.fit(X_meta_train, y_train)
+    print("Super-Ensemble y Meta-Clasificador Stacking entrenados correctamente.")
     
     # Extraer características del sorteo entrante (t = n_draws)
     feats_next = extract_features_for_step(draws, n_draws, transition_counts, transition2_counts, transition_mod_counts, target_mod)
     X_test = np.array([feats_next[n] for n in range(46)])
+    X_test_scaled = scaler.transform(X_test)
     
-    # Predecir probabilidades
+    # Predecir probabilidades base
     p_xgb = clf_xgb.predict_proba(X_test)[:, 1]
     p_lgb = clf_lgb.predict_proba(X_test)[:, 1]
     p_cat = clf_cat.predict_proba(X_test)[:, 1]
-    probs_t = (p_xgb + p_lgb + p_cat) / 3.0
+    p_rf  = clf_rf.predict_proba(X_test)[:, 1]
+    p_mlp = clf_mlp.predict_proba(X_test_scaled)[:, 1]
+    
+    X_meta_test = np.column_stack([p_xgb, p_lgb, p_cat, p_rf, p_mlp])
+    probs_t = clf_meta.predict_proba(X_meta_test)[:, 1]
     
     # Fusión Borda Count
     borda = defaultdict(float)
-    for p_model in [p_xgb, p_lgb, p_cat]:
+    for p_model in [p_xgb, p_lgb, p_cat, p_rf, p_mlp, probs_t]:
         ranking_model = sorted(range(46), key=lambda x: p_model[x], reverse=True)
         for rank, n in enumerate(ranking_model):
             borda[n] += (45 - rank)
     borda_ranking = [n for n, score in sorted(borda.items(), key=lambda x: x[1], reverse=True)]
+
     
     # Para 3 boletos, usamos un Pool de 15 números (el tamaño óptimo validado en backtest que logra el máximo porcentaje de acierto disjunto)
     pool_size = 15
@@ -514,12 +506,45 @@ def main():
     print("\n==================================================")
     print("BOLETOS RECOMENDADOS (MÁXIMA PROBABILIDAD):")
     print("==================================================")
+    letters = ["A", "B", "C"]
+    tickets_json = []
     for idx, ticket in enumerate(tickets_optimos):
-        print(f"Boleto {idx+1:02d}: {sorted(ticket)} | Prob. Individual de Acierto (3+): {individual_probs[idx]:.2f}%")
+        t_sorted = sorted(ticket)
+        print(f"Boleto {idx+1:02d}: {t_sorted} | Prob. Individual de Acierto (3+): {individual_probs[idx]:.2f}%")
+        tickets_json.append({
+            "nombre": f"SUPER TICKET SUPER-ENSEMBLE STACKING {letters[idx] if idx < 3 else idx+1}",
+            "numeros": t_sorted
+        })
     print("==================================================")
     print(f"PROBABILIDAD ACUMULADA CONJUNTA (3+ aciertos en al menos 1 boleto): {prob_exito:.2f}%")
     print(f"Desempeño relativo frente al azar: {(prob_exito / 5.48):.2f}x superior")
     print("==================================================")
 
+    # Export to proxima_prediccion.json and historial_predicciones.json
+    pred_data = {
+        "fecha_prediccion": datetime.now().isoformat(),
+        "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+        "juego": "Quini 6 (Super-Ensemble Stacking ML + Max-Coverage Rueda Optimizada - 32 Features)",
+        "top_numeros": sorted(top_pool),
+        "tickets": tickets_json
+    }
+
+    with open('proxima_prediccion.json', 'w', encoding='utf-8') as f:
+        json.dump(pred_data, f, indent=2, ensure_ascii=False)
+    print("\n[OK] Predicción guardada exitosamente en proxima_prediccion.json")
+
+    hist_file = 'historial_predicciones.json'
+    try:
+        with open(hist_file, 'r', encoding='utf-8') as f:
+            historial = json.load(f)
+    except Exception:
+        historial = []
+
+    historial.append(pred_data)
+    with open(hist_file, 'w', encoding='utf-8') as f:
+        json.dump(historial, f, indent=2, ensure_ascii=False)
+    print("[OK] Predicción registrada en historial_predicciones.json")
+
 if __name__ == '__main__':
     main()
+

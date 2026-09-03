@@ -5,7 +5,7 @@ import random
 import numpy as np
 import itertools
 import warnings
-from collections import defaultdict, Counter
+from collections import defaultdict
 
 # Asegurar que el directorio del script esté en el path para imports locales
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -273,6 +273,8 @@ def extract_features_for_step(draws, t, transition_counts, transition2_counts, t
         
     return features
 
+features_cache = {}
+
 def get_features_for_step_cached(draws, t, transition_counts, transition2_counts, transition_mod_counts):
     if t not in features_cache:
         features_cache[t] = extract_features_for_step(draws, t, transition_counts, transition2_counts, transition_mod_counts)
@@ -471,10 +473,11 @@ def ejecutar_backtest_secuencial(draws, start_idx=200, train_interval=20):
             
         # 8. Random Control Evaluation (3 tickets)
         for _ in range(3):
-            while True:
-                rnd_ticket = random.sample(range(46), 6)
+            rnd_ticket = random.sample(range(46), 6)
+            for _intentos in range(1000):
                 if es_ticket_valido(rnd_ticket):
                     break
+                rnd_ticket = random.sample(range(46), 6)
             hits_rnd = len(set(rnd_ticket).intersection(real_draw))
             control_hits_distribution[hits_rnd] += 1
             

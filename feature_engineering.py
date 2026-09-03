@@ -1,8 +1,7 @@
 import numpy as np
-from collections import defaultdict
 
 # ---------------------------------------------------------------------------
-# Feature Engineering helpers – can be imported by backtest script
+# Feature Engineering helpers – imported by backtest_ml_completo.py
 # ---------------------------------------------------------------------------
 
 def freq_last_k(datos_hist, k=20, max_num=45):
@@ -28,19 +27,6 @@ def fft_energy(series):
     fft_vals = np.fft.fft(series - np.mean(series))
     energy = np.sum(np.abs(fft_vals) ** 2)
     return float(energy)
-
-
-def cooc_weighted(cooc, freq, max_cooc):
-    """Return a weighted co‑occurrence matrix where each entry is divided by the
-    product of the individual frequencies of the two numbers. This reduces the
-    bias toward very frequent numbers.
-    """
-    weighted = defaultdict(lambda: defaultdict(float))
-    for n1 in cooc:
-        for n2, cnt in cooc[n1].items():
-            denom = (freq.get(n1, 1e-6) * freq.get(n2, 1e-6))
-            weighted[n1][n2] = cnt / denom if denom != 0 else 0.0
-    return weighted
 
 # ---------------------------------------------------------------------------
 # Helper to detect abrupt distribution changes (breakpoint) – boolean flag
@@ -90,4 +76,6 @@ def ewma_crossover(series, short_span=3, long_span=20):
     short_val = ewma(series, short_span)
     long_val = ewma(series, long_span)
     return 1.0 if short_val > long_val else 0.0
+
+
 

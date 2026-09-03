@@ -1,6 +1,6 @@
 import csv
-import numpy as np
 import itertools
+import numpy as np
 import os
 import sys
 import random
@@ -13,6 +13,7 @@ from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
 from feature_engineering import freq_last_k, fft_energy, breakpoint_flag, delay_entropy, ewma_crossover
+
 
 def leer_datos(archivo='c:/Users/Administrador/Desktop/lot/historico_quini_limpio.csv'):
     datos = []
@@ -169,6 +170,9 @@ def extraer_features(datos_hist, max_num=45):
                         vals_cos[idx_p] = float(amp_max * np.cos(2 * np.pi * freq_max * t_next + fase))
         fft_vals_top3[n] = vals_cos
 
+    freq_last20 = freq_last_k(datos_hist, k=20, max_num=max_num)
+    bp_flag = breakpoint_flag(datos_hist, window=30, max_num=max_num)
+
     for n in range(max_num + 1):
         delay = n_sorteos - 1 - last_seen.get(n, -1)
         if last_seen.get(n, -1) == -1:
@@ -202,11 +206,9 @@ def extraer_features(datos_hist, max_num=45):
                     prob_markov3 += markov_3_trans[p][n] / total_t
             prob_markov3 /= 6.0
 
-        # Compute additional engineered features for number n
-        freq_last20 = freq_last_k(datos_hist, k=20, max_num=max_num)
+        # Compute per-number features
         binary_series = np.array([1.0 if n in sorteo else 0.0 for sorteo in datos_hist])
         energy_n = fft_energy(binary_series)
-        bp_flag = breakpoint_flag(datos_hist, window=30, max_num=max_num)
         
         # New advanced features
         delays_n = delays_hist.get(n, [])
@@ -471,10 +473,11 @@ def ejecutar_backtest_acumulativo(datos, start_idx=35, pool_size=24, gamma=0.5, 
             
         # Evaluar aciertos del Control Aleatorio
         for _ in range(3):
-            while True:
-                rnd_ticket = random.sample(range(46), 6)
+            rnd_ticket = random.sample(range(46), 6)
+            for _intentos in range(1000):
                 if es_ticket_valido(rnd_ticket):
                     break
+                rnd_ticket = random.sample(range(46), 6)
             hits_rnd = len(set(rnd_ticket).intersection(real_draw))
             control_hits_distribution[hits_rnd] += 1
             

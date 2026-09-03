@@ -1,4 +1,4 @@
-﻿"""
+"""
 =============================================================================
   OPTIMIZADOR DE PATRONES - LOTO
   Mejoras sobre analizador_patrones.py:
@@ -11,9 +11,6 @@
 """
 
 import csv
-import os
-import sys
-import math
 import itertools
 import numpy as np
 from collections import defaultdict, Counter
