@@ -1,56 +1,56 @@
 {
-  "fecha_prediccion": "2026-07-20T12:45:51.547423",
+  "fecha_prediccion": "2026-09-03T10:13:12.963923",
   "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
   "juego": "Quini 6 (Super-Ensemble Stacking ML + Max-Coverage Rueda Optimizada - 32 Features)",
   "top_numeros": [
     0,
-    1,
-    2,
+    3,
+    4,
     5,
+    6,
     7,
+    9,
     10,
     12,
     14,
-    18,
-    21,
     23,
     25,
-    38,
+    31,
     39,
-    44
+    43
   ],
   "tickets": [
     {
       "nombre": "SUPER TICKET SUPER-ENSEMBLE STACKING A",
       "numeros": [
-        2,
-        5,
-        10,
+        4,
+        9,
         12,
         23,
-        38
+        25,
+        43
       ]
     },
     {
       "nombre": "SUPER TICKET SUPER-ENSEMBLE STACKING B",
       "numeros": [
         0,
-        1,
+        5,
+        6,
         7,
-        25,
-        39,
-        44
+        31,
+        39
       ]
     },
     {
       "nombre": "SUPER TICKET SUPER-ENSEMBLE STACKING C",
       "numeros": [
         0,
-        1,
-        2,
+        3,
+        4,
+        10,
         14,
-        18,
-        21
+        23
       ]
     }
   ]
