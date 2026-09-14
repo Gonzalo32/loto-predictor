@@ -341,34 +341,37 @@ def prob_hits_poisson_binomial_flat(p):
     
     return h3, h4, h5, h6
 
-def select_top_3_tickets_poisson(boletos_viables, probs, n_tickets=3, gamma=0.0, w3=0.1, w4=1.0, w5=10.0):
-    tickets_optimos = []
-    current_probs = probs.copy()
+def compute_cooccurrence_matrix(draws):
+    matrix = np.zeros((46, 46))
+    total = len(draws) or 1
+    for d in draws:
+        nums = d['numbers']
+        for u, v in itertools.combinations(nums, 2):
+            matrix[u, v] += 1.0
+            matrix[v, u] += 1.0
+    return matrix / total
+
+def select_tiered_clique_tickets(boletos_viables, borda_scores, cooccur_matrix, gamma=0.75, w_co=250.0):
+    # 1. Ticket A: Borda Core Spike (Highest Borda sum + Pair Co-occurrence)
+    ticket_A = max(boletos_viables, key=lambda b: sum(borda_scores[n] for n in b) + w_co * sum(cooccur_matrix[u, v] for u, v in itertools.combinations(b, 2)))
     
-    for _ in range(n_tickets):
-        best_ticket = None
-        best_fitness = -1.0
+    # Apply controlled discount (gamma = 0.75) for Ticket A numbers
+    borda_B = borda_scores.copy()
+    for n in ticket_A:
+        borda_B[n] *= gamma
         
-        for boleto in boletos_viables:
-            c_probs = [current_probs[n] for n in sorted(boleto)]
-            h3, h4, h5, h6 = prob_hits_poisson_binomial_flat(c_probs)
-            fitness = w3 * h3 + (w3 + w4) * h4 + (w3 + w4 + w5) * (h5 + h6)
-            
-            if fitness > best_fitness:
-                best_fitness = fitness
-                best_ticket = boleto
-                
-        if best_ticket is not None:
-            tickets_optimos.append(best_ticket)
-            # Discount selected numbers
-            for n in best_ticket:
-                current_probs[n] *= gamma
-        else:
-            if boletos_viables:
-                tickets_optimos.append(boletos_viables[0])
-            else:
-                break
-    return tickets_optimos
+    # 2. Ticket B: Affinity Clique (High Co-occurrence Pair Density + remaining Borda anchor)
+    ticket_B = max(boletos_viables, key=lambda b: sum(cooccur_matrix[u, v] for u, v in itertools.combinations(b, 2)) * 500.0 + sum(borda_B[n] for n in b))
+    
+    # Apply controlled discount for Ticket B numbers
+    borda_C = borda_B.copy()
+    for n in ticket_B:
+        borda_C[n] *= gamma
+        
+    # 3. Ticket C: Hypergraph Coverage (Maximize remaining Borda score sum + pair co-occurrence)
+    ticket_C = max(boletos_viables, key=lambda b: sum(borda_C[n] for n in b) + (w_co * 0.8) * sum(cooccur_matrix[u, v] for u, v in itertools.combinations(b, 2)))
+    
+    return [ticket_A, ticket_B, ticket_C]
 
 def estimar_probabilidad_exito_conjunto(tickets, probs, trials=20000):
     probs_norm = probs / np.sum(probs)
@@ -538,10 +541,12 @@ def main():
     print(f"Total combinaciones posibles en Pool: {len(todas_combinaciones)}")
     print(f"Total combinaciones físicamente viables: {len(boletos_viables)}")
     
-    # Ejecutar optimización probabilística secuencial para 3 boletos
-    n_tickets = 3
-    print(f"\nSeleccionando {n_tickets} boletos de máxima probabilidad...")
-    tickets_optimos = select_top_3_tickets_poisson(boletos_viables, probs_t, n_tickets=n_tickets)
+    # Calcular matriz de co-ocurrencia histórica
+    cooccur_matrix = compute_cooccurrence_matrix(draws)
+    
+    # Ejecutar optimización probabilística secuencial y por densidad de co-ocurrencia para 3 boletos
+    print("\nSeleccionando 3 boletos con optimización por Co-ocurrencia, Densidad de Pares y Estructura Escalonada...")
+    tickets_optimos = select_tiered_clique_tickets(boletos_viables, borda, cooccur_matrix, gamma=0.75, w_co=250.0)
     
     # Simular la probabilidad acumulada conjunta de éxito
     print("Estimando probabilidad acumulada de éxito mediante simulación Monte Carlo...")
@@ -555,15 +560,20 @@ def main():
         individual_probs.append((h3 + h4 + h5 + h6) * 100)
     
     print("\n==================================================")
-    print("BOLETOS RECOMENDADOS (MÁXIMA PROBABILIDAD):")
+    print("BOLETOS RECOMENDADOS (OPTIMIZACIÓN CLIQUE & PAIR DENSITY):")
     print("==================================================")
-    letters = ["A", "B", "C"]
+    ticket_names = [
+        "SUPER TICKET A (CORE SPIKE)",
+        "SUPER TICKET B (AFFINITY CLIQUE)",
+        "SUPER TICKET C (HYPERGRAPH COVER)"
+    ]
     tickets_json = []
     for idx, ticket in enumerate(tickets_optimos):
         t_sorted = sorted(ticket)
-        print(f"Boleto {idx+1:02d}: {t_sorted} | Prob. Individual de Acierto (3+): {individual_probs[idx]:.2f}%")
+        t_name = ticket_names[idx] if idx < len(ticket_names) else f"SUPER TICKET {idx+1}"
+        print(f"Boleto {idx+1:02d} [{t_name}]: {t_sorted} | Prob. Individual de Acierto (3+): {individual_probs[idx]:.2f}%")
         tickets_json.append({
-            "nombre": f"SUPER TICKET ATTENTION NEURAL NETWORK {letters[idx] if idx < 3 else idx+1}",
+            "nombre": t_name,
             "numeros": t_sorted
         })
     print("==================================================")
