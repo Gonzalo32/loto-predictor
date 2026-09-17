@@ -1,56 +1,51 @@
 {
-  "fecha_prediccion": "2026-09-14T13:06:40.064457",
+  "fecha_prediccion": "2026-09-17T13:00:05.999049",
   "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
   "juego": "Quini 6 (Deep Multi-Head Attention Neural Network Engine v2.0 - 4.4% Hit Rate Winner)",
   "top_numeros": [
     4,
     5,
     6,
+    7,
     9,
     12,
-    17,
-    21,
+    19,
     23,
     25,
-    26,
-    31,
-    39,
-    43,
-    44,
-    45
+    43
   ],
   "tickets": [
     {
       "nombre": "SUPER TICKET A (CORE SPIKE)",
       "numeros": [
         4,
-        5,
         6,
-        17,
-        23,
-        31
+        7,
+        9,
+        12,
+        23
       ]
     },
     {
       "nombre": "SUPER TICKET B (AFFINITY CLIQUE)",
       "numeros": [
-        9,
-        12,
-        21,
-        23,
-        43,
-        44
+        4,
+        5,
+        6,
+        19,
+        25,
+        43
       ]
     },
     {
       "nombre": "SUPER TICKET C (HYPERGRAPH COVER)",
       "numeros": [
-        4,
-        25,
-        26,
-        31,
-        39,
-        45
+        5,
+        7,
+        9,
+        12,
+        19,
+        23
       ]
     }
   ]

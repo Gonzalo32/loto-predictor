@@ -498,11 +498,11 @@ def main():
     borda_ranking = [n for n, score in sorted(borda.items(), key=lambda x: x[1], reverse=True)]
 
     
-    # Para 3 boletos, usamos un Pool de 15 números (el tamaño óptimo validado en backtest que logra el máximo porcentaje de acierto disjunto)
-    pool_size = 15
+    # Pool reducido de alta densidad de precisión (Reducción de pool a 10 números de máxima probabilidad)
+    pool_size = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 10
     top_pool = borda_ranking[:pool_size]
     print(f"\n==================================================")
-    print(f"POOL RESTRINGIDO DE ALTA PROBABILIDAD ({pool_size} NÚMEROS):")
+    print(f"POOL RESTRINGIDO DE ALTA PROBABILIDAD Y DENSIDAD ({pool_size} NÚMEROS):")
     print(f"{sorted(top_pool)}")
     print(f"==================================================")
     
