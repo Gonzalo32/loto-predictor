@@ -1,20 +1,29 @@
 import csv
 import os
+from typing import TypedDict, List
 
-nuevos_sorteos = [
+class SorteoDict(TypedDict):
+    sorteo: int
+    fecha: str
+    Tradicional: List[str]
+    Segunda: List[str]
+    Revancha: List[str]
+    SiempreSale: List[str]
+
+nuevos_sorteos: List[SorteoDict] = [
     {
-        'sorteo': 3409, 'fecha': '2026-09-16',
-        'Tradicional': ['13','14','16','19','20','29'],
-        'Segunda': ['02','06','09','31','36','42'],
-        'Revancha': ['02','09','20','30','35','36'],
-        'SiempreSale': ['11','25','27','38','40','44']
+        'sorteo': 3411, 'fecha': '2026-09-23',
+        'Tradicional': ['05','07','18','25','30','41'],
+        'Segunda': ['00','06','08','14','40','44'],
+        'Revancha': ['14','15','31','34','35','41'],
+        'SiempreSale': ['13','24','27','32','42','44']
     },
     {
-        'sorteo': 3408, 'fecha': '2026-09-13',
-        'Tradicional': ['05','08','22','29','34','37'],
-        'Segunda': ['04','20','25','31','39','42'],
-        'Revancha': ['16','19','21','35','38','42'],
-        'SiempreSale': ['11','15','33','36','43','44']
+        'sorteo': 3410, 'fecha': '2026-09-20',
+        'Tradicional': ['01','06','09','25','30','33'],
+        'Segunda': ['02','06','07','12','18','44'],
+        'Revancha': ['05','07','12','20','24','31'],
+        'SiempreSale': ['14','15','29','31','32','40']
     }
 ]
 
@@ -27,14 +36,16 @@ def actualizar_completo():
     filtered_lines = []
     for line in existing_lines[1:]:
         parts = line.strip().split(',')
-        if parts and parts[0].isdigit() and int(parts[0]) >= 3408:
+        if parts and parts[0].isdigit() and int(parts[0]) >= 3410:
             continue
         filtered_lines.append(line)
 
     new_rows = []
     for s in nuevos_sorteos:
         for mod in ['Tradicional', 'Segunda', 'Revancha', 'SiempreSale']:
-            nums = s[mod]
+            nums = s.get(mod)
+            if not isinstance(nums, list) or len(nums) != 6:
+                continue
             row_str = f"{s['sorteo']},{s['fecha']},{mod}," + ",".join(nums) + "\n"
             new_rows.append(row_str)
 
@@ -42,7 +53,7 @@ def actualizar_completo():
         f.write(header)
         f.writelines(new_rows)
         f.writelines(filtered_lines)
-    print(f"[OK] historico_quini_completo.csv actualizado con sorteos 3408 y 3409.")
+    print(f"[OK] historico_quini_completo.csv actualizado con sorteos 3410 y 3411.")
 
 def actualizar_limpio():
     path = 'c:/Users/Administrador/Desktop/lot/historico_quini_limpio.csv'
@@ -53,13 +64,15 @@ def actualizar_limpio():
     filtered_lines = []
     for line in existing_lines[1:]:
         parts = line.strip().split(',')
-        if parts and parts[0].isdigit() and int(parts[0]) >= 3408:
+        if parts and parts[0].isdigit() and int(parts[0]) >= 3410:
             continue
         filtered_lines.append(line)
 
     new_rows = []
     for s in nuevos_sorteos:
         nums = s['Tradicional']
+        if not isinstance(nums, list) or len(nums) != 6:
+            continue
         row_str = f"{s['sorteo']},{s['fecha']}," + ",".join(nums) + ",00\n"
         new_rows.append(row_str)
 
@@ -67,7 +80,7 @@ def actualizar_limpio():
         f.write(header)
         f.writelines(new_rows)
         f.writelines(filtered_lines)
-    print(f"[OK] historico_quini_limpio.csv actualizado con sorteos 3408 y 3409.")
+    print(f"[OK] historico_quini_limpio.csv actualizado con sorteos 3410 y 3411.")
 
 if __name__ == '__main__':
     actualizar_completo()

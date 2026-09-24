@@ -2074,5 +2074,113 @@
         ]
       }
     ]
+  },
+  {
+    "fecha_prediccion": "2026-09-21T10:11:52.110924",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Combinado - Adaptive Dynamic Pool + Cross-Modal Transitions)",
+    "top_numeros": [
+      0,
+      4,
+      5,
+      6,
+      7,
+      9,
+      10,
+      12,
+      19,
+      23,
+      25,
+      38
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET A (CORE SPIKE)",
+        "numeros": [
+          4,
+          6,
+          7,
+          9,
+          23,
+          25
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET B (AFFINITY CLIQUE)",
+        "numeros": [
+          0,
+          5,
+          6,
+          12,
+          19,
+          38
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET C (HYPERGRAPH COVER)",
+        "numeros": [
+          4,
+          5,
+          7,
+          9,
+          10,
+          23
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-09-23T13:38:30.573617",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Combinado - Adaptive Dynamic Pool + Cross-Modal Transitions)",
+    "top_numeros": [
+      0,
+      4,
+      5,
+      6,
+      7,
+      9,
+      10,
+      12,
+      19,
+      23,
+      25,
+      38
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET A (CORE SPIKE)",
+        "numeros": [
+          4,
+          6,
+          7,
+          9,
+          23,
+          25
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET B (AFFINITY CLIQUE)",
+        "numeros": [
+          0,
+          5,
+          6,
+          12,
+          19,
+          38
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET C (HYPERGRAPH COVER)",
+        "numeros": [
+          4,
+          5,
+          7,
+          9,
+          10,
+          23
+        ]
+      }
+    ]
   }
 ]

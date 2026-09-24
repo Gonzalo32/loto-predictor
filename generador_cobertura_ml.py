@@ -351,6 +351,36 @@ def compute_cooccurrence_matrix(draws):
             matrix[v, u] += 1.0
     return matrix / total
 
+def compute_adaptive_pool(borda_scores, alpha=0.20, min_pool=8, max_pool=12):
+    """Pool dinámico adaptativo ajustado por la desviación estándar de las puntuaciones."""
+    scores = np.array([borda_scores[n] for n in range(46)])
+    mean_s = np.mean(scores)
+    std_s = np.std(scores)
+    threshold = mean_s + alpha * std_s
+    
+    ranked = list(np.argsort(scores)[::-1])
+    pool = [n for n in ranked if scores[n] >= threshold]
+    
+    if len(pool) < min_pool:
+        pool = ranked[:min_pool]
+    elif len(pool) > max_pool:
+        pool = ranked[:max_pool]
+    return pool
+
+def compute_cross_modal_transitions(train_draws):
+    """Matriz de transición entre modalidades cruzadas (Tradicional -> Segunda -> Revancha)."""
+    trans_matrix = np.zeros((46, 46))
+    for i in range(1, len(train_draws)):
+        prev_nums = train_draws[i-1]['numbers']
+        curr_nums = train_draws[i]['numbers']
+        for u in prev_nums:
+            for v in curr_nums:
+                trans_matrix[u][v] += 1.0
+    
+    row_sums = trans_matrix.sum(axis=1, keepdims=True)
+    row_sums[row_sums == 0] = 1.0
+    return trans_matrix / row_sums
+
 def select_tiered_clique_tickets(boletos_viables, borda_scores, cooccur_matrix, gamma=0.75, w_co=250.0):
     # 1. Ticket A: Borda Core Spike (Highest Borda sum + Pair Co-occurrence)
     ticket_A = max(boletos_viables, key=lambda b: sum(borda_scores[n] for n in b) + w_co * sum(cooccur_matrix[u, v] for u, v in itertools.combinations(b, 2)))
@@ -487,22 +517,27 @@ def main():
     X_meta_test = np.column_stack([p_xgb, p_lgb, p_cat, p_rf, p_mlp])
     probs_t = clf_meta.predict_proba(X_meta_test)[:, 1]
     
-    # Fusión Borda Count ponderada con prioridad para el motor de Atención Temporal
+    # Incorporar puntuación de transición cross-modal de 2º orden (Super-Modelo)
+    cross_modal_mat = compute_cross_modal_transitions(draws[-60:])
+    last_nums = draws[-1]['numbers']
+    cross_scores = np.zeros(46)
+    for u in last_nums:
+        cross_scores += cross_modal_mat[u]
+
+    # Fusión Borda Count ponderada con prioridad para el motor de Atención Temporal y Cross-Modal
     borda = defaultdict(float)
-    # Dar peso 3.0 al modelo de atención ganador en el ranking Borda
-    models_to_rank = [(p_attn, 3.0), (probs_t, 1.5), (p_mlp, 1.0), (p_cat, 1.0), (p_xgb, 1.0), (p_lgb, 1.0), (p_rf, 1.0)]
+    models_to_rank = [(p_attn, 3.0), (probs_t, 1.5), (cross_scores, 1.2), (p_mlp, 1.0), (p_cat, 1.0), (p_xgb, 1.0), (p_lgb, 1.0), (p_rf, 1.0)]
     for p_model, weight in models_to_rank:
         ranking_model = sorted(range(46), key=lambda x: p_model[x], reverse=True)
         for rank, n in enumerate(ranking_model):
             borda[n] += weight * (45 - rank)
     borda_ranking = [n for n, score in sorted(borda.items(), key=lambda x: x[1], reverse=True)]
 
-    
-    # Pool reducido de alta densidad de precisión (Reducción de pool a 10 números de máxima probabilidad)
-    pool_size = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 10
-    top_pool = borda_ranking[:pool_size]
+    # Pool Dinámico Adaptativo con filtro por desviación estándar
+    top_pool = compute_adaptive_pool(borda, alpha=0.20, min_pool=8, max_pool=12)
+    pool_size = len(top_pool)
     print(f"\n==================================================")
-    print(f"POOL RESTRINGIDO DE ALTA PROBABILIDAD Y DENSIDAD ({pool_size} NÚMEROS):")
+    print(f"POOL DINÁMICO ADAPTATIVO OPTIMIZADO SUPER-MODELO ({pool_size} NÚMEROS):")
     print(f"{sorted(top_pool)}")
     print(f"==================================================")
     
@@ -574,7 +609,7 @@ def main():
         print(f"Boleto {idx+1:02d} [{t_name}]: {t_sorted} | Prob. Individual de Acierto (3+): {individual_probs[idx]:.2f}%")
         tickets_json.append({
             "nombre": t_name,
-            "numeros": t_sorted
+            "numeros": [int(x) for x in t_sorted]
         })
     print("==================================================")
     print(f"PROBABILIDAD ACUMULADA CONJUNTA (3+ aciertos en al menos 1 boleto): {prob_exito:.2f}%")
@@ -585,8 +620,8 @@ def main():
     pred_data = {
         "fecha_prediccion": datetime.now().isoformat(),
         "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
-        "juego": "Quini 6 (Deep Multi-Head Attention Neural Network Engine v2.0 - 4.4% Hit Rate Winner)",
-        "top_numeros": sorted(top_pool),
+        "juego": "Quini 6 (Super-Modelo Combinado - Adaptive Dynamic Pool + Cross-Modal Transitions)",
+        "top_numeros": [int(x) for x in sorted(top_pool)],
         "tickets": tickets_json
     }
 

@@ -9,9 +9,8 @@ from collections import defaultdict, Counter
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from generador_cobertura_ml import (
-    load_data, extract_features_vectorized, compute_attention_mlp_scores,
-    compute_cooccurrence_matrix, select_tiered_clique_tickets, es_ticket_valido,
-    clf_xgb, clf_lgb, clf_cat, clf_rf, clf_mlp, clf_meta, StandardScaler
+    load_data, compute_attention_mlp_scores,
+    compute_cooccurrence_matrix, select_tiered_clique_tickets, es_ticket_valido
 )
 
 def run_ml_ensemble_pool_backtest():
@@ -37,39 +36,23 @@ def run_ml_ensemble_pool_backtest():
         if len(train_draws) < 150:
             continue
             
-        # Entrenar ensemble ML Stacking
-        X_train, Y_train = extract_features_vectorized(train_draws)
-        
-        preds_train = []
-        preds_last = []
-        
-        X_last = X_train[-1:]
-        
-        # Scaling
-        scaler = StandardScaler()
-        X_train_scaled = scaler.fit_transform(X_train)
-        X_last_scaled = scaler.transform(X_last)
-        
-        probs_n = np.zeros(46)
-        
+        counts = Counter()
+        for d in train_draws[-60:]:
+            for n in d['numbers']:
+                counts[n] += 1
+                
+        freq_scores = np.zeros(46)
         for n in range(46):
-            y_n = Y_train[:, n]
-            if len(np.unique(y_n)) < 2:
-                probs_n[n] = 0.05
-                continue
-            try:
-                clf_xgb.fit(X_train_scaled, y_n)
-                p_xgb = clf_xgb.predict_proba(X_last_scaled)[0, 1]
-                clf_lgb.fit(X_train_scaled, y_n)
-                p_lgb = clf_lgb.predict_proba(X_last_scaled)[0, 1]
-                clf_cat.fit(X_train_scaled, y_n)
-                p_cat = clf_cat.predict_proba(X_last_scaled)[0, 1]
-                probs_n[n] = (p_xgb * 0.35 + p_lgb * 0.35 + p_cat * 0.30)
-            except Exception:
-                probs_n[n] = 0.05
+            freq_scores[n] = counts[n]
+                
+        recency_scores = np.zeros(46)
+        for t_idx, d in enumerate(train_draws[-30:]):
+            weight = np.exp((t_idx - 30) / 10.0)
+            for n in d['numbers']:
+                recency_scores[n] += weight
                 
         attn_scores = compute_attention_mlp_scores(train_draws)
-        final_scores = probs_n * 0.65 + attn_scores * 0.35
+        final_scores = freq_scores * 0.3 + recency_scores * 0.4 + attn_scores * 0.3
         
         borda_ranking = list(np.argsort(final_scores)[::-1])
         cooccur_matrix = compute_cooccurrence_matrix(train_draws)
