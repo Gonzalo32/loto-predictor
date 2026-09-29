@@ -1,0 +1,11 @@
+{
+  "total_sorteos": 50,
+  "tiempo_calculo": 1.9096789360046387,
+  "pool_14_promedio_aciertos": 1.94,
+  "modelo_promedio_aciertos_ticket": 1.24,
+  "azar_promedio_aciertos_ticket": 1.58,
+  "pct_3_plus_modelo": 4.0,
+  "pct_4_plus_modelo": 0.0,
+  "pozo_extra_promedio_aciertos": 2.8,
+  "pct_3_plus_pozo_extra": 68.0
+}

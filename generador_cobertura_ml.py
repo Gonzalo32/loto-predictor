@@ -18,6 +18,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
+from cobertura_combinatoria import select_wheel_coverage_tickets
 
 # Define models with high performance hyper-parameters (Class-Weighted Ensemble for minority positive class)
 clf_xgb = XGBClassifier(n_estimators=100, learning_rate=0.05, max_depth=4, scale_pos_weight=6.0, use_label_encoder=False, eval_metric='logloss', verbosity=0, random_state=42, n_jobs=-1)
@@ -351,7 +352,7 @@ def compute_cooccurrence_matrix(draws):
             matrix[v, u] += 1.0
     return matrix / total
 
-def compute_adaptive_pool(borda_scores, alpha=0.20, min_pool=8, max_pool=12):
+def compute_adaptive_pool(borda_scores, alpha=0.15, min_pool=10, max_pool=14):
     """Pool dinámico adaptativo ajustado por la desviación estándar de las puntuaciones."""
     scores = np.array([borda_scores[n] for n in range(46)])
     mean_s = np.mean(scores)
@@ -366,6 +367,40 @@ def compute_adaptive_pool(borda_scores, alpha=0.20, min_pool=8, max_pool=12):
     elif len(pool) > max_pool:
         pool = ranked[:max_pool]
     return pool
+
+def compute_exponential_cooccurrence_scores(draws, window=40, half_life=15.0):
+    cooccur_exp = np.zeros((46, 46))
+    sub_draws = draws[-window:]
+    T = len(sub_draws)
+    for t_idx, d in enumerate(sub_draws):
+        w_t = np.exp((t_idx - T) / half_life)
+        for u, v in itertools.combinations(d['numbers'], 2):
+            cooccur_exp[u, v] += w_t
+            cooccur_exp[v, u] += w_t
+    pcr_scores = np.array([np.sum(cooccur_exp[n]) for n in range(46)])
+    return pcr_scores, cooccur_exp
+
+def compute_delta_delay_momentum_scores(draws):
+    last_seen = {n: -1 for n in range(46)}
+    delays_list = defaultdict(list)
+    for idx, d in enumerate(draws):
+        for n in d['numbers']:
+            if last_seen[n] != -1:
+                delays_list[n].append(idx - last_seen[n])
+            last_seen[n] = idx
+    
+    ddm_scores = np.zeros(46)
+    n_total = len(draws)
+    for n in range(46):
+        delay = n_total - 1 - last_seen[n] if last_seen[n] != -1 else n_total
+        mean_d = np.mean(delays_list[n]) if delays_list[n] else 7.6
+        std_d = np.std(delays_list[n]) if len(delays_list[n]) > 1 else 5.0
+        z_delay = (delay - mean_d) / (std_d + 1e-5)
+        if -0.2 <= z_delay <= 1.8:
+            ddm_scores[n] = 1.0 - 0.35 * abs(z_delay - 0.6)
+        else:
+            ddm_scores[n] = 0.1
+    return ddm_scores
 
 def compute_cross_modal_transitions(train_draws):
     """Matriz de transición entre modalidades cruzadas (Tradicional -> Segunda -> Revancha)."""
@@ -524,17 +559,32 @@ def main():
     for u in last_nums:
         cross_scores += cross_modal_mat[u]
 
-    # Fusión Borda Count ponderada con prioridad para el motor de Atención Temporal y Cross-Modal
+    # Computar métricas de Co-ocurrencia Ponderada Exponencial (PCR) y Momento de Retardo (DDM)
+    pcr_scores, cooccur_exp_mat = compute_exponential_cooccurrence_scores(draws)
+    ddm_scores = compute_delta_delay_momentum_scores(draws)
+
+    # Fusión Borda Count ponderada con prioridad para el motor de Atención Temporal, PCR, DDM y Cross-Modal
     borda = defaultdict(float)
-    models_to_rank = [(p_attn, 3.0), (probs_t, 1.5), (cross_scores, 1.2), (p_mlp, 1.0), (p_cat, 1.0), (p_xgb, 1.0), (p_lgb, 1.0), (p_rf, 1.0)]
+    models_to_rank = [
+        (p_attn, 3.0),
+        (probs_t, 1.5),
+        (pcr_scores, 1.4),
+        (cross_scores, 1.2),
+        (ddm_scores, 1.0),
+        (p_mlp, 1.0),
+        (p_cat, 1.0),
+        (p_xgb, 1.0),
+        (p_lgb, 1.0),
+        (p_rf, 1.0)
+    ]
     for p_model, weight in models_to_rank:
         ranking_model = sorted(range(46), key=lambda x: p_model[x], reverse=True)
         for rank, n in enumerate(ranking_model):
             borda[n] += weight * (45 - rank)
     borda_ranking = [n for n, score in sorted(borda.items(), key=lambda x: x[1], reverse=True)]
 
-    # Pool Dinámico Adaptativo con filtro por desviación estándar
-    top_pool = compute_adaptive_pool(borda, alpha=0.20, min_pool=8, max_pool=12)
+    # Pool Dinámico Adaptativo Ampliado (10 a 14 números)
+    top_pool = compute_adaptive_pool(borda, alpha=0.15, min_pool=10, max_pool=14)
     pool_size = len(top_pool)
     print(f"\n==================================================")
     print(f"POOL DINÁMICO ADAPTATIVO OPTIMIZADO SUPER-MODELO ({pool_size} NÚMEROS):")
@@ -576,12 +626,33 @@ def main():
     print(f"Total combinaciones posibles en Pool: {len(todas_combinaciones)}")
     print(f"Total combinaciones físicamente viables: {len(boletos_viables)}")
     
-    # Calcular matriz de co-ocurrencia histórica
-    cooccur_matrix = compute_cooccurrence_matrix(draws)
-    
-    # Ejecutar optimización probabilística secuencial y por densidad de co-ocurrencia para 3 boletos
-    print("\nSeleccionando 3 boletos con optimización por Co-ocurrencia, Densidad de Pares y Estructura Escalonada...")
-    tickets_optimos = select_tiered_clique_tickets(boletos_viables, borda, cooccur_matrix, gamma=0.75, w_co=250.0)
+    # Generación de 3 boletos con Arquitectura Híbrida Core-Surge & Cobertura Wheeling
+    print("\nSeleccionando 3 boletos optimizados con Arquitectura Híbrida Core-Surge...")
+    core_pool = set(borda_ranking[:8])
+    surge_pool = set(top_pool) - core_pool
+
+    # Ticket A (CORE SPIKE): Privilegia densidad dentro del Core Pool (top 8)
+    viables_core = [c for c in boletos_viables if sum(1 for n in c if n in core_pool) >= 4]
+    if not viables_core:
+        viables_core = boletos_viables
+    ticket_A = max(viables_core, key=lambda b: sum(borda[n] for n in b) + 200.0 * sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(b, 2)))
+
+    # Ticket B (AFFINITY CLIQUE): Maximiza la sinergia de pares recientes (PCR), asegurando diversidad respecto a Ticket A
+    viables_B = [c for c in boletos_viables if set(c) != set(ticket_A)]
+    if not viables_B:
+        viables_B = boletos_viables
+    ticket_B = max(viables_B, key=lambda b: sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(b, 2)) * 500.0 + sum(borda[n] for n in b))
+
+    # Ticket C (HYPERGRAPH SURGE COVERAGE): Cobertura diversificada sobre el Surge Pool
+    borda_C = borda.copy()
+    for n in set(ticket_A).union(set(ticket_B)):
+        borda_C[n] *= 0.5
+    viables_C = [c for c in boletos_viables if set(c) != set(ticket_A) and set(c) != set(ticket_B)]
+    if not viables_C:
+        viables_C = boletos_viables
+    ticket_C = max(viables_C, key=lambda b: sum(borda_C[n] for n in b) + 150.0 * sum(1 for n in b if n in surge_pool))
+
+    tickets_optimos = [ticket_A, ticket_B, ticket_C]
     
     # Simular la probabilidad acumulada conjunta de éxito
     print("Estimando probabilidad acumulada de éxito mediante simulación Monte Carlo...")
@@ -604,7 +675,7 @@ def main():
     ]
     tickets_json = []
     for idx, ticket in enumerate(tickets_optimos):
-        t_sorted = sorted(ticket)
+        t_sorted = [int(x) for x in sorted(ticket)]
         t_name = ticket_names[idx] if idx < len(ticket_names) else f"SUPER TICKET {idx+1}"
         print(f"Boleto {idx+1:02d} [{t_name}]: {t_sorted} | Prob. Individual de Acierto (3+): {individual_probs[idx]:.2f}%")
         tickets_json.append({
