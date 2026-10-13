@@ -2348,5 +2348,290 @@
         ]
       }
     ]
+  },
+  {
+    "fecha_prediccion": "2026-10-02T10:36:39.111647",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Combinado - Adaptive Dynamic Pool + Cross-Modal Transitions)",
+    "top_numeros": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      9,
+      12,
+      20,
+      21,
+      23,
+      25,
+      31
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET A (CORE SPIKE)",
+        "numeros": [
+          2,
+          5,
+          7,
+          12,
+          20,
+          31
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET B (AFFINITY CLIQUE)",
+        "numeros": [
+          5,
+          7,
+          12,
+          20,
+          25,
+          31
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET C (HYPERGRAPH COVER)",
+        "numeros": [
+          0,
+          4,
+          6,
+          9,
+          21,
+          23
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-10-09T08:46:27.510857",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Combinado - Adaptive Dynamic Pool + Cross-Modal Transitions)",
+    "top_numeros": [
+      2,
+      5,
+      7,
+      9,
+      10,
+      12,
+      14,
+      19,
+      23,
+      25,
+      27,
+      31,
+      38,
+      44
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET A (CORE SPIKE)",
+        "numeros": [
+          5,
+          7,
+          12,
+          19,
+          23,
+          31
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET B (AFFINITY CLIQUE)",
+        "numeros": [
+          5,
+          7,
+          12,
+          19,
+          31,
+          44
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET C (HYPERGRAPH COVER)",
+        "numeros": [
+          2,
+          9,
+          10,
+          14,
+          27,
+          38
+        ]
+      }
+    ],
+    "sorteo_evaluado": 3416,
+    "fecha_sorteo_real": "2026-10-11",
+    "resultado_real": {
+      "Tradicional": [
+        13,
+        14,
+        15,
+        18,
+        20,
+        29
+      ],
+      "Segunda": [
+        0,
+        4,
+        5,
+        6,
+        8,
+        26
+      ],
+      "Revancha": [
+        0,
+        1,
+        6,
+        27,
+        42,
+        45
+      ],
+      "SiempreSale": [
+        2,
+        3,
+        11,
+        13,
+        37,
+        45
+      ],
+      "PozoExtra": [
+        0,
+        1,
+        4,
+        5,
+        6,
+        8,
+        13,
+        14,
+        15,
+        18,
+        20,
+        26,
+        27,
+        29,
+        42,
+        45
+      ]
+    },
+    "evaluacion": {
+      "aciertos_pool_14": {
+        "Tradicional": [
+          14
+        ],
+        "Segunda": [
+          5
+        ],
+        "Revancha": [
+          27
+        ],
+        "SiempreSale": [
+          2
+        ],
+        "PozoExtra": [
+          5,
+          14,
+          27
+        ]
+      },
+      "aciertos_tickets": {
+        "SUPER TICKET A (CORE SPIKE)": {
+          "Tradicional": [],
+          "Segunda": [
+            5
+          ],
+          "Revancha": [],
+          "SiempreSale": [],
+          "PozoExtra": [
+            5
+          ]
+        },
+        "SUPER TICKET B (AFFINITY CLIQUE)": {
+          "Tradicional": [],
+          "Segunda": [
+            5
+          ],
+          "Revancha": [],
+          "SiempreSale": [],
+          "PozoExtra": [
+            5
+          ]
+        },
+        "SUPER TICKET C (HYPERGRAPH COVER)": {
+          "Tradicional": [
+            14
+          ],
+          "Segunda": [],
+          "Revancha": [
+            27
+          ],
+          "SiempreSale": [
+            2
+          ],
+          "PozoExtra": [
+            14,
+            27
+          ]
+        }
+      },
+      "premio_obtenido": false,
+      "comentarios": "Concentración anómala en sorteo real (4 nros en decena 10 en Tradicional; 5 nros en decena 0 en Segunda). Overlap excesivo entre Ticket A y B (5 nros)."
+    }
+  },
+  {
+    "fecha_prediccion": "2026-10-13T08:44:00.285588",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Combinado - Adaptive Dynamic Pool + Cross-Modal Transitions)",
+    "top_numeros": [
+      0,
+      1,
+      4,
+      5,
+      6,
+      9,
+      16,
+      19,
+      23,
+      27,
+      31,
+      38,
+      43,
+      44
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET A (CORE SPIKE)",
+        "numeros": [
+          0,
+          4,
+          5,
+          6,
+          27,
+          44
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET B (AFFINITY CLIQUE)",
+        "numeros": [
+          0,
+          1,
+          6,
+          9,
+          27,
+          31
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET C (HYPERGRAPH COVER)",
+        "numeros": [
+          16,
+          19,
+          23,
+          27,
+          38,
+          43
+        ]
+      }
+    ]
   }
 ]

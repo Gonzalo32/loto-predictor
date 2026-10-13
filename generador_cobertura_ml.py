@@ -637,19 +637,21 @@ def main():
         viables_core = boletos_viables
     ticket_A = max(viables_core, key=lambda b: sum(borda[n] for n in b) + 200.0 * sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(b, 2)))
 
-    # Ticket B (AFFINITY CLIQUE): Maximiza la sinergia de pares recientes (PCR), asegurando diversidad respecto a Ticket A
-    viables_B = [c for c in boletos_viables if set(c) != set(ticket_A)]
+    # Ticket B (AFFINITY CLIQUE): Maximiza la sinergia de pares recientes (PCR), asegurando diversidad ortogonal respecto a Ticket A (solapamiento max 3)
+    viables_B = [c for c in boletos_viables if len(set(c).intersection(set(ticket_A))) <= 3]
     if not viables_B:
-        viables_B = boletos_viables
+        viables_B = [c for c in boletos_viables if len(set(c).intersection(set(ticket_A))) <= 4]
+    if not viables_B:
+        viables_B = [c for c in boletos_viables if set(c) != set(ticket_A)]
     ticket_B = max(viables_B, key=lambda b: sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(b, 2)) * 500.0 + sum(borda[n] for n in b))
 
-    # Ticket C (HYPERGRAPH SURGE COVERAGE): Cobertura diversificada sobre el Surge Pool
+    # Ticket C (HYPERGRAPH SURGE COVERAGE): Cobertura diversificada sobre el Surge Pool con diversidad ortogonal respecto a A y B
     borda_C = borda.copy()
     for n in set(ticket_A).union(set(ticket_B)):
         borda_C[n] *= 0.5
-    viables_C = [c for c in boletos_viables if set(c) != set(ticket_A) and set(c) != set(ticket_B)]
+    viables_C = [c for c in boletos_viables if len(set(c).intersection(set(ticket_A))) <= 3 and len(set(c).intersection(set(ticket_B))) <= 3]
     if not viables_C:
-        viables_C = boletos_viables
+        viables_C = [c for c in boletos_viables if set(c) != set(ticket_A) and set(c) != set(ticket_B)]
     ticket_C = max(viables_C, key=lambda b: sum(borda_C[n] for n in b) + 150.0 * sum(1 for n in b if n in surge_pool))
 
     tickets_optimos = [ticket_A, ticket_B, ticket_C]
