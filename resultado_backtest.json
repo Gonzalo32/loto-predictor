@@ -1,11 +1,34 @@
 {
-  "total_sorteos": 50,
-  "tiempo_calculo": 1.9096789360046387,
-  "pool_14_promedio_aciertos": 1.94,
-  "modelo_promedio_aciertos_ticket": 1.24,
-  "azar_promedio_aciertos_ticket": 1.58,
-  "pct_3_plus_modelo": 4.0,
-  "pct_4_plus_modelo": 0.0,
-  "pozo_extra_promedio_aciertos": 2.8,
-  "pct_3_plus_pozo_extra": 68.0
+  "total_sorteos_evaluados": 80,
+  "fecha_evaluacion": "2026-10-19",
+  "periodo_sorteos": "Sorteo #3339 al #3418",
+  "modelo_nuevo_rueda_anclada": {
+    "descripcion": "Pool Adaptativo 10-12 + Rueda Reducida Anclada (Preservación de Cuartetos)",
+    "promedio_acierto_maximo_modal": 2.01,
+    "sorteos_3_plus": 21,
+    "pct_3_plus": 26.25,
+    "sorteos_4_plus_premios": 1,
+    "pct_4_plus": 1.25,
+    "premios_cobrados": 1,
+    "pct_cobro_premios": 1.25,
+    "cobertura_cuartetos_pool": "21.4% a 35.7% (vs 4.5% en pool 14)"
+  },
+  "modelo_anterior_dispersion": {
+    "descripcion": "Pool 14 + Dispersión Forzada Overlap <= 3 + Penalización 50% en Ticket C",
+    "promedio_acierto_maximo_modal": 2.12,
+    "sorteos_3_plus": 19,
+    "pct_3_plus": 23.75,
+    "sorteos_4_plus_premios": 1,
+    "pct_4_plus": 1.25,
+    "premios_cobrados": 1,
+    "pct_cobro_premios": 1.25,
+    "cobertura_cuartetos_pool": "4.5% (fragmentación de aciertos en 2-2-1)"
+  },
+  "benchmark_azar_3_boletas": {
+    "descripcion": "3 boletos aleatorios por sorteo en Quini 6",
+    "promedio_acierto_maximo_modal": 1.25,
+    "pct_3_plus_teorico": 12.0,
+    "pct_4_plus_teorico": 0.765,
+    "sorteos_4_plus_esperados_en_80": 0.61
+  }
 }

@@ -583,8 +583,8 @@ def main():
             borda[n] += weight * (45 - rank)
     borda_ranking = [n for n, score in sorted(borda.items(), key=lambda x: x[1], reverse=True)]
 
-    # Pool Dinámico Adaptativo Ampliado (10 a 14 números)
-    top_pool = compute_adaptive_pool(borda, alpha=0.15, min_pool=10, max_pool=14)
+    # Pool Dinámico Adaptativo Compactado (10 a 12 números para máxima densidad de cuartetos)
+    top_pool = compute_adaptive_pool(borda, alpha=0.20, min_pool=10, max_pool=12)
     pool_size = len(top_pool)
     print(f"\n==================================================")
     print(f"POOL DINÁMICO ADAPTATIVO OPTIMIZADO SUPER-MODELO ({pool_size} NÚMEROS):")
@@ -626,33 +626,49 @@ def main():
     print(f"Total combinaciones posibles en Pool: {len(todas_combinaciones)}")
     print(f"Total combinaciones físicamente viables: {len(boletos_viables)}")
     
-    # Generación de 3 boletos con Arquitectura Híbrida Core-Surge & Cobertura Wheeling
-    print("\nSeleccionando 3 boletos optimizados con Arquitectura Híbrida Core-Surge...")
-    core_pool = set(borda_ranking[:8])
-    surge_pool = set(top_pool) - core_pool
+    # Generación de 3 boletos con Rueda Reducida Anclada & Cobertura de Cuartetos
+    print("\nSeleccionando 3 boletos con Rueda Reducida Anclada (Premio-Oriented)...")
+    
+    # 1. Puntuación de calidad conjunta por combinación
+    scored_combos = []
+    for c in boletos_viables:
+        s_nodes = sum(borda[n] for n in c)
+        s_edges = sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(c, 2))
+        scored_combos.append((s_nodes + 320.0 * s_edges, c))
+    scored_combos.sort(key=lambda x: x[0], reverse=True)
 
-    # Ticket A (CORE SPIKE): Privilegia densidad dentro del Core Pool (top 8)
-    viables_core = [c for c in boletos_viables if sum(1 for n in c if n in core_pool) >= 4]
-    if not viables_core:
-        viables_core = boletos_viables
-    ticket_A = max(viables_core, key=lambda b: sum(borda[n] for n in b) + 200.0 * sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(b, 2)))
+    # Ticket A (CORE SPIKE DENSITY): Máxima concentración del núcleo de alta probabilidad
+    ticket_A = scored_combos[0][1]
 
-    # Ticket B (AFFINITY CLIQUE): Maximiza la sinergia de pares recientes (PCR), asegurando diversidad ortogonal respecto a Ticket A (solapamiento max 3)
-    viables_B = [c for c in boletos_viables if len(set(c).intersection(set(ticket_A))) <= 3]
-    if not viables_B:
-        viables_B = [c for c in boletos_viables if len(set(c).intersection(set(ticket_A))) <= 4]
-    if not viables_B:
-        viables_B = [c for c in boletos_viables if set(c) != set(ticket_A)]
-    ticket_B = max(viables_B, key=lambda b: sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(b, 2)) * 500.0 + sum(borda[n] for n in b))
+    # Ticket B (ANCHORED CLUSTER SYNERGY): Mantiene anclaje fuerte (3 a 4 números comunes con A)
+    # para no dispersar el núcleo ganador, rotando los pares con mayor afinidad
+    candidates_B = [c for _, c in scored_combos[1:] if 3 <= len(set(c).intersection(set(ticket_A))) <= 4]
+    if candidates_B:
+        ticket_B = candidates_B[0]
+    else:
+        candidates_B_alt = [c for _, c in scored_combos[1:] if 2 <= len(set(c).intersection(set(ticket_A))) <= 4]
+        ticket_B = candidates_B_alt[0] if candidates_B_alt else scored_combos[1][1]
 
-    # Ticket C (HYPERGRAPH SURGE COVERAGE): Cobertura diversificada sobre el Surge Pool con diversidad ortogonal respecto a A y B
-    borda_C = borda.copy()
-    for n in set(ticket_A).union(set(ticket_B)):
-        borda_C[n] *= 0.5
-    viables_C = [c for c in boletos_viables if len(set(c).intersection(set(ticket_A))) <= 3 and len(set(c).intersection(set(ticket_B))) <= 3]
-    if not viables_C:
-        viables_C = [c for c in boletos_viables if set(c) != set(ticket_A) and set(c) != set(ticket_B)]
-    ticket_C = max(viables_C, key=lambda b: sum(borda_C[n] for n in b) + 150.0 * sum(1 for n in b if n in surge_pool))
+    # Ticket C (QUAD-COVERAGE OPTIMIZER): Maximiza la cobertura de nuevos cuartetos (4-subsets)
+    # no cubiertos por A y B, sin castigar artificialmente los números con mayor score
+    quads_AB = set(itertools.combinations(ticket_A, 4)).union(set(itertools.combinations(ticket_B, 4)))
+    candidates_C = []
+    for s_val, c in scored_combos:
+        if c == ticket_A or c == ticket_B:
+            continue
+        quads_c = set(itertools.combinations(c, 4))
+        new_quads = len(quads_c - quads_AB)
+        ovA = len(set(c).intersection(set(ticket_A)))
+        ovB = len(set(c).intersection(set(ticket_B)))
+        if 2 <= ovA <= 4 and 2 <= ovB <= 4:
+            candidates_C.append((new_quads * 75.0 + s_val, c))
+
+    if candidates_C:
+        candidates_C.sort(key=lambda x: x[0], reverse=True)
+        ticket_C = candidates_C[0][1]
+    else:
+        candidates_C_fallback = [c for _, c in scored_combos if c != ticket_A and c != ticket_B]
+        ticket_C = candidates_C_fallback[0] if candidates_C_fallback else scored_combos[2][1]
 
     tickets_optimos = [ticket_A, ticket_B, ticket_C]
     
@@ -671,9 +687,9 @@ def main():
     print("BOLETOS RECOMENDADOS (OPTIMIZACIÓN CLIQUE & PAIR DENSITY):")
     print("==================================================")
     ticket_names = [
-        "SUPER TICKET A (CORE SPIKE)",
-        "SUPER TICKET B (AFFINITY CLIQUE)",
-        "SUPER TICKET C (HYPERGRAPH COVER)"
+        "SUPER TICKET A (CORE SPIKE DENSITY)",
+        "SUPER TICKET B (ANCHORED CLUSTER SYNERGY)",
+        "SUPER TICKET C (QUAD-COVERAGE OPTIMIZER)"
     ]
     tickets_json = []
     for idx, ticket in enumerate(tickets_optimos):

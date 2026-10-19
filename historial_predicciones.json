@@ -2632,6 +2632,373 @@
           43
         ]
       }
+    ],
+    "sorteo_evaluado": 3417,
+    "fecha_sorteo_real": "2026-10-14",
+    "resultado_real": {
+      "Tradicional": [
+        1,
+        9,
+        23,
+        24,
+        32,
+        37
+      ],
+      "Segunda": [
+        5,
+        8,
+        13,
+        23,
+        43,
+        44
+      ],
+      "Revancha": [
+        4,
+        6,
+        10,
+        25,
+        30,
+        37
+      ],
+      "SiempreSale": [
+        1,
+        14,
+        18,
+        41,
+        43,
+        44
+      ],
+      "PozoExtra": [
+        1,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        13,
+        23,
+        24,
+        25,
+        30,
+        32,
+        37,
+        43,
+        44
+      ]
+    },
+    "evaluacion": {
+      "aciertos_pool_14": {
+        "Tradicional": [
+          1,
+          9,
+          23
+        ],
+        "Segunda": [
+          5,
+          23,
+          43,
+          44
+        ],
+        "Revancha": [
+          4,
+          6
+        ],
+        "SiempreSale": [
+          1,
+          43,
+          44
+        ],
+        "PozoExtra": [
+          1,
+          4,
+          5,
+          6,
+          9,
+          23,
+          43,
+          44
+        ]
+      },
+      "aciertos_tickets": {
+        "SUPER TICKET A (CORE SPIKE)": {
+          "Tradicional": [],
+          "Segunda": [
+            5,
+            44
+          ],
+          "Revancha": [
+            4,
+            6
+          ],
+          "SiempreSale": [
+            44
+          ],
+          "PozoExtra": [
+            4,
+            5,
+            6,
+            44
+          ]
+        },
+        "SUPER TICKET B (AFFINITY CLIQUE)": {
+          "Tradicional": [
+            1,
+            9
+          ],
+          "Segunda": [],
+          "Revancha": [
+            6
+          ],
+          "SiempreSale": [
+            1
+          ],
+          "PozoExtra": [
+            1,
+            6,
+            9
+          ]
+        },
+        "SUPER TICKET C (HYPERGRAPH COVER)": {
+          "Tradicional": [
+            23
+          ],
+          "Segunda": [
+            23,
+            43
+          ],
+          "Revancha": [],
+          "SiempreSale": [
+            43
+          ],
+          "PozoExtra": [
+            23,
+            43
+          ]
+        }
+      },
+      "premio_obtenido": false,
+      "comentarios": "Pool 14 capturó 8 números únicos en Pozo Extra y 4/6 en Segunda (5, 23, 43, 44). En tickets individuales, el Ticket A alcanzó 4 aciertos en Pozo Extra (4, 5, 6, 44) y 2 aciertos en Segunda y Revancha; no alcanzó el umbral mínimo de cobro en modalidades individuales (mínimo 4 aciertos)."
+    }
+  },
+  {
+    "fecha_prediccion": "2026-10-15T08:43:41.480767",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Combinado - Adaptive Dynamic Pool + Cross-Modal Transitions)",
+    "top_numeros": [
+      0,
+      4,
+      5,
+      9,
+      10,
+      12,
+      23,
+      25,
+      27,
+      31,
+      38,
+      39
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET A (PRIMARY CONSENSUS CLIQUE)",
+        "numeros": [
+          0,
+          4,
+          10,
+          25,
+          27,
+          38
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET B (CROSS-MODAL CO-OCCURRENCE WHEEL)",
+        "numeros": [
+          0,
+          4,
+          5,
+          12,
+          23,
+          31
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET C (ORTHOGONAL ANTI-SPOF COVER)",
+        "numeros": [
+          5,
+          9,
+          10,
+          12,
+          23,
+          25
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-10-15T10:14:14.094879",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Combinado - Adaptive Dynamic Pool + Cross-Modal Transitions)",
+    "top_numeros": [
+      0,
+      4,
+      5,
+      9,
+      10,
+      12,
+      14,
+      16,
+      23,
+      25,
+      27,
+      31,
+      38,
+      39
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET A (PRIMARY CONSENSUS CLIQUE)",
+        "numeros": [
+          0,
+          4,
+          5,
+          9,
+          23,
+          25
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET B (CROSS-MODAL CO-OCCURRENCE WHEEL)",
+        "numeros": [
+          4,
+          10,
+          12,
+          14,
+          25,
+          38
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET C (ORTHOGONAL ANTI-SPOF COVER)",
+        "numeros": [
+          0,
+          5,
+          10,
+          12,
+          16,
+          23
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-10-15T11:05:26.757225",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Combinado - Adaptive Dynamic Pool + Cross-Modal Transitions)",
+    "top_numeros": [
+      0,
+      4,
+      5,
+      9,
+      10,
+      12,
+      14,
+      16,
+      23,
+      25,
+      27,
+      31,
+      38,
+      39
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET A (CORE SPIKE)",
+        "numeros": [
+          0,
+          4,
+          5,
+          10,
+          23,
+          25
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET B (AFFINITY CLIQUE)",
+        "numeros": [
+          4,
+          10,
+          12,
+          14,
+          25,
+          38
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET C (HYPERGRAPH COVER)",
+        "numeros": [
+          0,
+          9,
+          16,
+          27,
+          31,
+          39
+        ]
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-10-19T11:17:20.609343",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Combinado - Adaptive Dynamic Pool + Cross-Modal Transitions)",
+    "top_numeros": [
+      4,
+      5,
+      6,
+      10,
+      14,
+      15,
+      23,
+      28,
+      38,
+      39,
+      41,
+      44
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET A (CORE SPIKE DENSITY)",
+        "numeros": [
+          4,
+          5,
+          6,
+          10,
+          38,
+          44
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET B (ANCHORED CLUSTER SYNERGY)",
+        "numeros": [
+          4,
+          6,
+          10,
+          14,
+          41,
+          44
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET C (QUAD-COVERAGE OPTIMIZER)",
+        "numeros": [
+          5,
+          14,
+          15,
+          23,
+          41,
+          44
+        ]
+      }
     ]
   }
 ]

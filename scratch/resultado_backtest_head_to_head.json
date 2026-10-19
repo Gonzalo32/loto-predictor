@@ -1,0 +1,18 @@
+{
+  "total_sorteos": 60,
+  "tiempo_seg": 2.9133667945861816,
+  "old": {
+    "avg_max_hits": 2.1666666666666665,
+    "sorteos_3plus": 15,
+    "sorteos_4plus": 1,
+    "sorteos_5plus": 1,
+    "premios_cobrados": 1
+  },
+  "new": {
+    "avg_max_hits": 2.1,
+    "sorteos_3plus": 17,
+    "sorteos_4plus": 1,
+    "sorteos_5plus": 1,
+    "premios_cobrados": 1
+  }
+}
