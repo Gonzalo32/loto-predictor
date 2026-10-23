@@ -15,8 +15,9 @@ class SorteoData(TypedDict):
 BASE_URL = "https://www.quini-6-resultados.com.ar"
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
 
-CSV_LIMPIO_PATH = 'c:/Users/Administrador/Desktop/lot/historico_quini_limpio.csv'
-CSV_COMPLETO_PATH = 'c:/Users/Administrador/Desktop/lot/historico_quini_completo.csv'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_LIMPIO_PATH = os.path.join(BASE_DIR, 'historico_quini_limpio.csv')
+CSV_COMPLETO_PATH = os.path.join(BASE_DIR, 'historico_quini_completo.csv')
 
 def fetch_html(url: str) -> Optional[str]:
     try:

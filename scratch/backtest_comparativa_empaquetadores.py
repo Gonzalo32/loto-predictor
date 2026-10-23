@@ -7,7 +7,8 @@ import time
 import os
 import sys
 
-sys.path.insert(0, 'c:/Users/Administrador/Desktop/lot')
+WORKSPACE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, WORKSPACE_DIR)
 from generador_cobertura_ml import (
     load_data, es_ticket_valido,
     compute_exponential_cooccurrence_scores, compute_delta_delay_momentum_scores,
@@ -15,7 +16,7 @@ from generador_cobertura_ml import (
 )
 
 def run_packing_backtest():
-    draws = load_data('c:/Users/Administrador/Desktop/lot/historico_quini_completo.csv')
+    draws = load_data(os.path.join(WORKSPACE_DIR, 'historico_quini_completo.csv'))
     eval_draws = [d for d in draws if d['modalidad'] == 'Tradicional'][-40:]
     
     print("="*90)

@@ -18,7 +18,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
-from cobertura_combinatoria import select_wheel_coverage_tickets
+from cobertura_combinatoria import select_optimal_wheel_triplet, select_wheel_coverage_tickets
 
 # Define models with high performance hyper-parameters (Class-Weighted Ensemble for minority positive class)
 clf_xgb = XGBClassifier(n_estimators=100, learning_rate=0.05, max_depth=4, scale_pos_weight=6.0, use_label_encoder=False, eval_metric='logloss', verbosity=0, random_state=42, n_jobs=-1)
@@ -74,11 +74,13 @@ def compute_attention_mlp_scores(train_draws):
     return scores
 
 
-def load_data(filepath='c:/Users/Administrador/Desktop/lot/historico_quini_completo.csv'):
+def load_data(filepath=None):
     draws = []
+    if filepath is None or not os.path.exists(filepath):
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        filepath = os.path.join(base_dir, 'historico_quini_completo.csv')
     if not os.path.exists(filepath):
         filepath = 'historico_quini_completo.csv'
-        
     if not os.path.exists(filepath):
         print(f"Error: No existe el archivo {filepath}")
         return []
@@ -568,9 +570,9 @@ def main():
     models_to_rank = [
         (p_attn, 3.0),
         (probs_t, 1.5),
-        (pcr_scores, 1.4),
+        (pcr_scores, 1.5),
         (cross_scores, 1.2),
-        (ddm_scores, 1.0),
+        (ddm_scores, 1.8),
         (p_mlp, 1.0),
         (p_cat, 1.0),
         (p_xgb, 1.0),
@@ -626,51 +628,16 @@ def main():
     print(f"Total combinaciones posibles en Pool: {len(todas_combinaciones)}")
     print(f"Total combinaciones físicamente viables: {len(boletos_viables)}")
     
-    # Generación de 3 boletos con Rueda Reducida Anclada & Cobertura de Cuartetos
-    print("\nSeleccionando 3 boletos con Rueda Reducida Anclada (Premio-Oriented)...")
-    
-    # 1. Puntuación de calidad conjunta por combinación
-    scored_combos = []
-    for c in boletos_viables:
-        s_nodes = sum(borda[n] for n in c)
-        s_edges = sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(c, 2))
-        scored_combos.append((s_nodes + 320.0 * s_edges, c))
-    scored_combos.sort(key=lambda x: x[0], reverse=True)
-
-    # Ticket A (CORE SPIKE DENSITY): Máxima concentración del núcleo de alta probabilidad
-    ticket_A = scored_combos[0][1]
-
-    # Ticket B (ANCHORED CLUSTER SYNERGY): Mantiene anclaje fuerte (3 a 4 números comunes con A)
-    # para no dispersar el núcleo ganador, rotando los pares con mayor afinidad
-    candidates_B = [c for _, c in scored_combos[1:] if 3 <= len(set(c).intersection(set(ticket_A))) <= 4]
-    if candidates_B:
-        ticket_B = candidates_B[0]
-    else:
-        candidates_B_alt = [c for _, c in scored_combos[1:] if 2 <= len(set(c).intersection(set(ticket_A))) <= 4]
-        ticket_B = candidates_B_alt[0] if candidates_B_alt else scored_combos[1][1]
-
-    # Ticket C (QUAD-COVERAGE OPTIMIZER): Maximiza la cobertura de nuevos cuartetos (4-subsets)
-    # no cubiertos por A y B, sin castigar artificialmente los números con mayor score
-    quads_AB = set(itertools.combinations(ticket_A, 4)).union(set(itertools.combinations(ticket_B, 4)))
-    candidates_C = []
-    for s_val, c in scored_combos:
-        if c == ticket_A or c == ticket_B:
-            continue
-        quads_c = set(itertools.combinations(c, 4))
-        new_quads = len(quads_c - quads_AB)
-        ovA = len(set(c).intersection(set(ticket_A)))
-        ovB = len(set(c).intersection(set(ticket_B)))
-        if 2 <= ovA <= 4 and 2 <= ovB <= 4:
-            candidates_C.append((new_quads * 75.0 + s_val, c))
-
-    if candidates_C:
-        candidates_C.sort(key=lambda x: x[0], reverse=True)
-        ticket_C = candidates_C[0][1]
-    else:
-        candidates_C_fallback = [c for _, c in scored_combos if c != ticket_A and c != ticket_B]
-        ticket_C = candidates_C_fallback[0] if candidates_C_fallback else scored_combos[2][1]
-
-    tickets_optimos = [ticket_A, ticket_B, ticket_C]
+    # Generación de 3 boletos con Rueda Reducida Optimizada (Cobertura Total 100%, Overlap <= 3, Anti-SPOF)
+    print("\nSeleccionando 3 boletos con Rueda Reducida Optimizada (Cobertura Total Garantizada)...")
+    tickets_optimos = select_optimal_wheel_triplet(
+        boletos_viables=boletos_viables,
+        pool=sorted(top_pool),
+        scores=borda,
+        cooccur_matrix=cooccur_exp_mat,
+        max_overlap=3,
+        w_cooccur=320.0
+    )
     
     # Simular la probabilidad acumulada conjunta de éxito
     print("Estimando probabilidad acumulada de éxito mediante simulación Monte Carlo...")
