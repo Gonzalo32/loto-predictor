@@ -117,11 +117,13 @@ def es_ticket_valido(ticket, recent_numbers=None, saturated_decades=None):
     spread = ticket[5] - ticket[0]
     if spread < 15 or spread > 45:
         return False
-    # 3. Decenas: máximo 4 números por decena
+    # 3. Decenas: máximo 3 números por decena (y máximo 2 en la decena del 40 ya que sólo hay 6 números: 40-45)
     decenas = defaultdict(int)
     for num in ticket:
         decenas[num // 10] += 1
-    if any(count > 4 for count in decenas.values()):
+    if any(count > 3 for count in decenas.values()):
+        return False
+    if decenas[4] > 2:
         return False
     # 4. Paridad: entre 1 y 5 números pares
     pares = sum(1 for n in ticket if n % 2 == 0)
@@ -354,7 +356,7 @@ def compute_cooccurrence_matrix(draws):
             matrix[v, u] += 1.0
     return matrix / total
 
-def compute_adaptive_pool(borda_scores, alpha=0.15, min_pool=10, max_pool=14):
+def compute_adaptive_pool(borda_scores, alpha=0.15, min_pool=9, max_pool=10):
     """Pool dinámico adaptativo ajustado por la desviación estándar de las puntuaciones."""
     scores = np.array([borda_scores[n] for n in range(46)])
     mean_s = np.mean(scores)
@@ -585,8 +587,8 @@ def main():
             borda[n] += weight * (45 - rank)
     borda_ranking = [n for n, score in sorted(borda.items(), key=lambda x: x[1], reverse=True)]
 
-    # Pool Dinámico Adaptativo Compactado (10 a 12 números para máxima densidad de cuartetos)
-    top_pool = compute_adaptive_pool(borda, alpha=0.20, min_pool=10, max_pool=12)
+    # Pool Dinámico Adaptativo Compactado (Pool 9 para diseño balanceado BIBD sin dispersión)
+    top_pool = compute_adaptive_pool(borda, alpha=0.20, min_pool=9, max_pool=9)
     pool_size = len(top_pool)
     print(f"\n==================================================")
     print(f"POOL DINÁMICO ADAPTATIVO OPTIMIZADO SUPER-MODELO ({pool_size} NÚMEROS):")
@@ -628,15 +630,15 @@ def main():
     print(f"Total combinaciones posibles en Pool: {len(todas_combinaciones)}")
     print(f"Total combinaciones físicamente viables: {len(boletos_viables)}")
     
-    # Generación de 3 boletos con Rueda Reducida Optimizada (Cobertura Total 100%, Overlap <= 3, Anti-SPOF)
-    print("\nSeleccionando 3 boletos con Rueda Reducida Optimizada (Cobertura Total Garantizada)...")
+    # Generación de 3 boletos con Diseño Balanceado BIBD 2-Fold (Trío Núcleo C(3,2) + Máxima Densidad de Pares)
+    print("\nSeleccionando 3 boletos con Diseño Balanceado BIBD 2-Fold (Trío Núcleo C(3,2))...")
     tickets_optimos = select_optimal_wheel_triplet(
         boletos_viables=boletos_viables,
         pool=sorted(top_pool),
         scores=borda,
         cooccur_matrix=cooccur_exp_mat,
-        max_overlap=3,
-        w_cooccur=320.0
+        max_overlap=4,
+        w_cooccur=350.0
     )
     
     # Simular la probabilidad acumulada conjunta de éxito
@@ -654,9 +656,9 @@ def main():
     print("BOLETOS RECOMENDADOS (OPTIMIZACIÓN CLIQUE & PAIR DENSITY):")
     print("==================================================")
     ticket_names = [
-        "SUPER TICKET A (CORE SPIKE DENSITY)",
-        "SUPER TICKET B (ANCHORED CLUSTER SYNERGY)",
-        "SUPER TICKET C (QUAD-COVERAGE OPTIMIZER)"
+        "SUPER TICKET A (CORE SPIKE DENSITY - BIBD PAIR A-B)",
+        "SUPER TICKET B (ANCHORED CLUSTER SYNERGY - BIBD PAIR A-C)",
+        "SUPER TICKET C (BALANCED COVERAGE OPTIMIZER - BIBD PAIR B-C)"
     ]
     tickets_json = []
     for idx, ticket in enumerate(tickets_optimos):
