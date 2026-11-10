@@ -28,14 +28,14 @@ clf_rf  = RandomForestClassifier(n_estimators=100, max_depth=6, class_weight='ba
 clf_mlp = MLPClassifier(hidden_layer_sizes=(64, 32), max_iter=200, random_state=42, early_stopping=True)
 clf_meta = LogisticRegression(random_state=42)
 
-def compute_attention_mlp_scores(train_draws):
-    trad_draws = [d['numbers'] for d in train_draws if d['modalidad'] == 'Tradicional']
-    if len(trad_draws) < 30:
-        trad_draws = [d['numbers'] for d in train_draws]
+def compute_attention_mlp_scores(train_draws, target_mod='Tradicional'):
+    mod_draws = [d['numbers'] for d in train_draws if d['modalidad'] == target_mod]
+    if len(mod_draws) < 30:
+        mod_draws = [d['numbers'] for d in train_draws]
         
-    T = len(trad_draws)
+    T = len(mod_draws)
     matrix = np.zeros((T, 46))
-    for t, nums in enumerate(trad_draws):
+    for t, nums in enumerate(mod_draws):
         for n in nums:
             matrix[t, n] = 1.0
             
@@ -57,20 +57,12 @@ def compute_attention_mlp_scores(train_draws):
         matrix[-5], matrix[-8], matrix[-10]
     ]).reshape(1, -1)
     
-    scores = np.zeros(46)
-    mlp_attn = MLPClassifier(hidden_layer_sizes=(64, 32), max_iter=150, random_state=42, early_stopping=True)
-    
-    for n in range(46):
-        y_n = Y[:, n]
-        if len(np.unique(y_n)) < 2:
-            scores[n] = 0.05
-            continue
-        try:
-            mlp_attn.fit(X, y_n)
-            scores[n] = mlp_attn.predict_proba(last_feat)[0, 1]
-        except Exception:
-            scores[n] = 0.05
-            
+    try:
+        mlp_attn = MLPClassifier(hidden_layer_sizes=(64, 32), max_iter=80, random_state=42, early_stopping=True)
+        mlp_attn.fit(X, Y)
+        scores = mlp_attn.predict_proba(last_feat)[0]
+    except Exception:
+        scores = np.mean(matrix[-20:], axis=0)
     return scores
 
 
@@ -107,7 +99,28 @@ def load_data(filepath=None):
     draws.sort(key=lambda x: (x['sorteo'], modality_order.get(x['modalidad'], 9)))
     return draws
 
-def es_ticket_valido(ticket, recent_numbers=None, saturated_decades=None):
+def compute_antagonist_pairs(train_draws, min_expected=10.0, max_lift=0.40):
+    """
+    Identifica pares que tienen una frecuencia observada significativamente inferior
+    a la esperada por azar en la modalidad Tradicional (lift < 0.40), evitando
+    combinaciones antagónicas que casi nunca salen juntas.
+    """
+    trad_draws = [d for d in train_draws if d['modalidad'] == 'Tradicional']
+    T = len(trad_draws)
+    if T < 50:
+        return set()
+    freq = Counter(n for d in trad_draws for n in d['numbers'])
+    pairs = Counter(tuple(sorted([u, v])) for d in trad_draws for u, v in itertools.combinations(d['numbers'], 2))
+    antagonist_pairs = set()
+    for u, v in itertools.combinations(range(46), 2):
+        p_exp = (freq[u] * freq[v]) / T
+        obs = pairs[tuple(sorted([u, v]))]
+        lift = obs / p_exp if p_exp > 0 else 1.0
+        if p_exp >= min_expected and lift < max_lift:
+            antagonist_pairs.add(tuple(sorted([u, v])))
+    return antagonist_pairs
+
+def es_ticket_valido(ticket, recent_numbers=None, saturated_decades=None, antagonist_pairs=None, min_distinct_decades=3):
     ticket = sorted(ticket)
     # 1. Consecutividad: máximo dos parejas consecutivas
     gaps_le_1 = sum(1 for i in range(1, len(ticket)) if ticket[i] - ticket[i-1] <= 1)
@@ -125,9 +138,20 @@ def es_ticket_valido(ticket, recent_numbers=None, saturated_decades=None):
         return False
     if decenas[4] > 2:
         return False
-    # 4. Paridad: entre 1 y 5 números pares
+    # 3b. Anti-Congestión: exigir que los 6 números toquen al menos min_distinct_decades decenas distintas
+    if len(decenas) < min_distinct_decades:
+        return False
+    # 4. Paridad: entre 1 y 5 números pares (óptimo 2 a 4)
     pares = sum(1 for n in ticket if n % 2 == 0)
     if pares == 0 or pares == 6:
+        return False
+    # 4b. Rango Gaussiano de Suma: 98% histórico de sorteos reales está entre 68 y 202
+    suma_ticket = sum(ticket)
+    if suma_ticket < 68 or suma_ticket > 202:
+        return False
+    # 4c. Balance Altos/Bajos: evitar extremos degenerados (0-6 y 6-0)
+    bajos = sum(1 for n in ticket if n <= 22)
+    if bajos < 1 or bajos > 5:
         return False
     # 5. Partición caliente/frío: exactamente 1 a 5 números calientes
     if recent_numbers is not None:
@@ -138,6 +162,11 @@ def es_ticket_valido(ticket, recent_numbers=None, saturated_decades=None):
     if saturated_decades:
         for dec in saturated_decades:
             if decenas[dec] > 2:
+                return False
+    # 7. Bloqueo de Pares Antagónicos (Lift < 0.40)
+    if antagonist_pairs:
+        for u, v in itertools.combinations(ticket, 2):
+            if tuple(sorted([u, v])) in antagonist_pairs:
                 return False
     return True
 
@@ -356,6 +385,38 @@ def compute_cooccurrence_matrix(draws):
             matrix[v, u] += 1.0
     return matrix / total
 
+def select_balanced_pool_9(borda_scores, saturated_decades=None, max_per_decade=3, pool_size=9):
+    """
+    Selecciona un Pool de tamaño pool_size (default 9) números de máximo score Borda garantizando
+    que ninguna decena tenga más de 3 números (max 2 en dec 40).
+    Excepción de Élite: si una decena saturada contiene al Top 1 o Top 2 de la IA,
+    permite hasta 3 números para no amputar a candidatos estelares.
+    """
+    ranked = sorted(range(46), key=lambda x: borda_scores[x], reverse=True)
+    elite_numbers = set(ranked[:2])
+    pool = []
+    dec_counts = Counter()
+    for n in ranked:
+        dec = n // 10
+        limit = 2 if dec == 4 else max_per_decade
+        if saturated_decades and dec in saturated_decades:
+            is_elite_dec = any((e // 10 == dec) for e in elite_numbers)
+            if not is_elite_dec:
+                limit = min(limit, 2)
+            else:
+                limit = 3
+        if dec_counts[dec] < limit:
+            pool.append(n)
+            dec_counts[dec] += 1
+            if len(pool) == pool_size:
+                break
+    if len(pool) < pool_size:
+        for n in ranked:
+            if n not in pool:
+                pool.append(n)
+                if len(pool) == pool_size: break
+    return sorted(pool)
+
 def compute_adaptive_pool(borda_scores, alpha=0.15, min_pool=9, max_pool=10):
     """Pool dinámico adaptativo ajustado por la desviación estándar de las puntuaciones."""
     scores = np.array([borda_scores[n] for n in range(46)])
@@ -442,6 +503,72 @@ def select_tiered_clique_tickets(boletos_viables, borda_scores, cooccur_matrix, 
     
     return [ticket_A, ticket_B, ticket_C]
 
+def auditar_prediccion_previa(draws):
+    pred_file = 'proxima_prediccion.json'
+    if not os.path.exists(pred_file):
+        return
+    try:
+        with open(pred_file, 'r', encoding='utf-8') as f:
+            pred = json.load(f)
+        last_sorteo = max(d['sorteo'] for d in draws)
+        group_last = [d for d in draws if d['sorteo'] == last_sorteo]
+        real_by_mod = {d['modalidad']: set(d['numbers']) for d in group_last}
+        pozo_extra = real_by_mod.get('Tradicional', set()) | real_by_mod.get('Segunda', set()) | real_by_mod.get('Revancha', set())
+        
+        tickets = pred.get('tickets', [])
+        if not tickets:
+            return
+            
+        print("\n==================================================")
+        print(f"AUDITORÍA DE LA JUGADA ANTERIOR (SORTEO #{last_sorteo}):")
+        print("==================================================")
+        for idx, t in enumerate(tickets):
+            nums = set(t.get('numeros', []))
+            t_name = t.get('nombre', f'Boleto {idx+1}')
+            print(f" {t_name}: {sorted(list(nums))}")
+            for mod in ['Tradicional', 'Segunda', 'Revancha', 'SiempreSale']:
+                if mod in real_by_mod:
+                    hits = nums & real_by_mod[mod]
+                    print(f"   -> {mod:<12}: {len(hits)} aciertos {sorted(list(hits)) if hits else ''}")
+            pe_hits = nums & pozo_extra
+            print(f"   -> Pozo Extra  : {len(pe_hits)} aciertos {sorted(list(pe_hits)) if pe_hits else ''}\n")
+        print("==================================================\n")
+        
+        # Guardar en historial_auditorias.json si no fue registrado antes
+        audit_file = 'historial_auditorias.json'
+        try:
+            if os.path.exists(audit_file):
+                with open(audit_file, 'r', encoding='utf-8') as af:
+                    audits = json.load(af)
+            else:
+                audits = []
+        except Exception:
+            audits = []
+            
+        if not any(a.get('sorteo') == last_sorteo for a in audits):
+            audit_record = {
+                "fecha_auditoria": datetime.now().isoformat(),
+                "sorteo": last_sorteo,
+                "resultados_reales": {m: sorted(list(nums)) for m, nums in real_by_mod.items()},
+                "tickets": [
+                    {
+                        "nombre": t.get('nombre', f'Boleto {i+1}'),
+                        "numeros": sorted(t.get('numeros', [])),
+                        "aciertos_tradicional": sorted(list(set(t.get('numeros', [])) & real_by_mod.get('Tradicional', set()))),
+                        "aciertos_segunda": sorted(list(set(t.get('numeros', [])) & real_by_mod.get('Segunda', set()))),
+                        "aciertos_revancha": sorted(list(set(t.get('numeros', [])) & real_by_mod.get('Revancha', set()))),
+                        "aciertos_siempre_sale": sorted(list(set(t.get('numeros', [])) & real_by_mod.get('SiempreSale', set()))),
+                        "aciertos_pozo_extra": sorted(list(set(t.get('numeros', [])) & pozo_extra))
+                    }
+                    for i, t in enumerate(tickets)
+                ]
+            }
+            audits.append(audit_record)
+            with open(audit_file, 'w', encoding='utf-8') as af:
+                json.dump(audits, af, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
+
 def estimar_probabilidad_exito_conjunto(tickets, probs, trials=20000):
     probs_norm = probs / np.sum(probs)
     successes = 0
@@ -455,7 +582,7 @@ def estimar_probabilidad_exito_conjunto(tickets, probs, trials=20000):
                 break
     return (successes / trials) * 100
 
-def main():
+def main(target_mod=None):
     print("==================================================")
     print("GENERADOR DE 3 BOLETOS ULTRA-OPTIMIZADOS - ML (QUINI 6)")
     print("==================================================\n")
@@ -471,23 +598,27 @@ def main():
     print(f"OK: {n_draws} sub-sorteos cargados.")
     print(f"Último sorteo registrado: Nro {last_draw['sorteo']} ({last_draw['fecha']}) [{last_draw['modalidad']}] -> {last_draw['numbers']}")
     
-    print("\nElija la modalidad para la predicción del próximo sorteo:")
-    print("1) Tradicional (Recomendado)")
-    print("2) Segunda Vuelta")
-    print("3) Revancha")
-    print("4) Siempre Sale")
+    # Auditar automáticamente el desempeño de la jugada anterior
+    auditar_prediccion_previa(draws)
     
-    opcion = '1'
-    if sys.stdin.isatty():
-        try:
-            opcion = input("Ingrese opción (1-4, default 1): ").strip()
-            if not opcion:
+    if target_mod is None:
+        print("\nElija la modalidad para la predicción del próximo sorteo:")
+        print("1) Tradicional (Recomendado)")
+        print("2) Segunda Vuelta")
+        print("3) Revancha")
+        print("4) Siempre Sale")
+        
+        opcion = '1'
+        if sys.stdin.isatty():
+            try:
+                opcion = input("Ingrese opción (1-4, default 1): ").strip()
+                if not opcion:
+                    opcion = '1'
+            except Exception:
                 opcion = '1'
-        except Exception:
-            opcion = '1'
-            
-    mod_map = {'1': 'Tradicional', '2': 'Segunda', '3': 'Revancha', '4': 'SiempreSale'}
-    target_mod = mod_map.get(opcion, 'Tradicional')
+                
+        mod_map = {'1': 'Tradicional', '2': 'Segunda', '3': 'Revancha', '4': 'SiempreSale'}
+        target_mod = mod_map.get(opcion, 'Tradicional')
     print(f"\n--> Generando predicción para modalidad: {target_mod}")
     
     # Inicializar matrices de transición
@@ -550,8 +681,8 @@ def main():
     p_mlp = clf_mlp.predict_proba(X_test_scaled)[:, 1]
     
     # Predecir con el motor Campeón Deep Multi-Head Attention MLP
-    print("Ejecutando motor Campeón: Deep Multi-Head Attention Neural Network...")
-    p_attn = compute_attention_mlp_scores(draws[:n_draws])
+    print(f"Ejecutando motor Campeón: Deep Multi-Head Attention Neural Network ({target_mod})...")
+    p_attn = compute_attention_mlp_scores(draws[:n_draws], target_mod=target_mod)
     
     X_meta_test = np.column_stack([p_xgb, p_lgb, p_cat, p_rf, p_mlp])
     probs_t = clf_meta.predict_proba(X_meta_test)[:, 1]
@@ -567,14 +698,47 @@ def main():
     pcr_scores, cooccur_exp_mat = compute_exponential_cooccurrence_scores(draws)
     ddm_scores = compute_delta_delay_momentum_scores(draws)
 
-    # Fusión Borda Count ponderada con prioridad para el motor de Atención Temporal, PCR, DDM y Cross-Modal
+    # -------------------------------------------------------------
+    # DETECCIÓN DE RÉGIMEN DINÁMICO (IDEA 2: MOMENTUM VS REVERSIÓN)
+    # Analiza la tasa de repetición en los últimos 5 sorteos
+    # -------------------------------------------------------------
+    # Detección cronológica real de régimen en sorteos de la modalidad objetivo
+    trad_draws_all = [d for d in draws if d['modalidad'] == target_mod]
+    last_5_trad = trad_draws_all[-5:]
+    n_repeats = sum(len(set(last_5_trad[i]['numbers']) & set(last_5_trad[i-1]['numbers'])) for i in range(1, len(last_5_trad)))
+    avg_repeats = n_repeats / 4.0
+    
+    if avg_repeats >= 1.0:
+        regime_desc = "Régimen Caliente / Alta Inercia (Prioridad Momentum/Recencia)"
+        w_rec = 2.8
+        w_ddm = 1.2
+        w_attn = 3.0
+    elif avg_repeats <= 0.5:
+        regime_desc = "Régimen Frío / Retorno a la Media (Prioridad Atraso Relativo DDM)"
+        w_rec = 1.2
+        w_ddm = 2.8
+        w_attn = 2.5
+    else:
+        regime_desc = "Régimen Balanceado (Equilibrio Momentum y Atraso)"
+        w_rec = 2.0
+        w_ddm = 1.8
+        w_attn = 2.8
+        
+    print(f"\n==================================================")
+    print(f"ANÁLISIS DE RÉGIMEN DINÁMICO (SUPER-MODELO ML):")
+    print(f" -> Tasa de repetición reciente: {avg_repeats:.2f} números/sorteo")
+    print(f" -> Estado detectado: {regime_desc}")
+    print(f" -> Pesos calibrados: Recencia={w_rec}, Atraso(DDM)={w_ddm}, Atención={w_attn}")
+    print(f"==================================================")
+
+    # Fusión Borda Count con pesos adaptativos según el régimen actual
     borda = defaultdict(float)
     models_to_rank = [
-        (p_attn, 3.0),
-        (probs_t, 1.5),
+        (p_attn, w_attn),
+        (probs_t, w_rec),
         (pcr_scores, 1.5),
         (cross_scores, 1.2),
-        (ddm_scores, 1.8),
+        (ddm_scores, w_ddm),
         (p_mlp, 1.0),
         (p_cat, 1.0),
         (p_xgb, 1.0),
@@ -585,22 +749,57 @@ def main():
         ranking_model = sorted(range(46), key=lambda x: p_model[x], reverse=True)
         for rank, n in enumerate(ranking_model):
             borda[n] += weight * (45 - rank)
+    # -------------------------------------------------------------
+    # SÚPER-RESONANCIA Y ARRASTRE MULTI-MODAL INMEDIATO
+    # Bolillas que salieron en la fecha previa inmediata (con boost a Siempre Sale y resonancia múltiple)
+    # -------------------------------------------------------------
+    last_sorteo_num = max(d['sorteo'] for d in draws)
+    last_date_draws = [d for d in draws if d['sorteo'] == last_sorteo_num]
+    res_counts = Counter(n for d in last_date_draws for n in d['numbers'])
+    prev_ss_nums = set()
+    for d in last_date_draws:
+        if d['modalidad'] == 'SiempreSale':
+            prev_ss_nums.update(d['numbers'])
+
+    resonance_detected = []
+    for n in range(46):
+        if res_counts[n] >= 2:
+            bonus_res = 18.0 * (res_counts[n] - 1)
+            borda[n] += bonus_res
+            resonance_detected.append((n, res_counts[n], bonus_res))
+        elif res_counts[n] == 1:
+            borda[n] += 4.0
+        if n in prev_ss_nums:
+            borda[n] += 4.0
+            
+    if resonance_detected:
+        print("\n==================================================")
+        print("SÚPER-RESONANCIA MULTI-MODAL DETECTADA (SORTEO PREVIO):")
+        for num, app, bon in resonance_detected:
+            print(f" -> Número {num:02d}: {app} apariciones en fecha #{last_sorteo_num} (Bonus IA: +{bon:.0f} pts)")
+        print(f"==================================================")
+
     borda_ranking = [n for n, score in sorted(borda.items(), key=lambda x: x[1], reverse=True)]
 
-    # Pool Dinámico Adaptativo Compactado (Pool 9 para diseño balanceado BIBD sin dispersión)
-    top_pool = compute_adaptive_pool(borda, alpha=0.20, min_pool=9, max_pool=9)
-    pool_size = len(top_pool)
-    print(f"\n==================================================")
-    print(f"POOL DINÁMICO ADAPTATIVO OPTIMIZADO SUPER-MODELO ({pool_size} NÚMEROS):")
-    print(f"{sorted(top_pool)}")
-    print(f"==================================================")
+    # -------------------------------------------------------------
+    # MODELADO DINÁMICO POR DÍA DE LA SEMANA (MIÉRCOLES VS DOMINGO)
+    # -------------------------------------------------------------
+    last_draw = draws[-1]
+    last_draw_date = last_draw['fecha']
+    last_weekday = datetime.strptime(last_draw_date, '%Y-%m-%d').weekday()
+    target_weekday = 2 if last_weekday == 6 else 6
+    weekday_name = "Miércoles" if target_weekday == 2 else "Domingo"
     
-    # Generar números calientes recientes de los últimos 5 sorteos secuenciales
-    recent_numbers = set()
-    for d in draws[-5:]:
-        recent_numbers.update(d['numbers'])
+    same_day_draws = [d for d in draws if datetime.strptime(d['fecha'], '%Y-%m-%d').weekday() == target_weekday]
+    counts_day = Counter(n for d in same_day_draws[-40:] for n in d['numbers'])
+    
+    borda_day = defaultdict(float)
+    borda_hib = defaultdict(float)
+    for n in range(46):
+        borda_day[n] = borda[n] + 16.0 * counts_day[n]
+        borda_hib[n] = borda[n] + 8.0 * counts_day[n]
         
-    # Obtener decena(s) saturada(s) del último sorteo de la modalidad elegida
+    # Obtener decena(s) saturada(s) del último sorteo
     saturated_decades = set()
     last_mod_draw = None
     for d in reversed(draws):
@@ -613,72 +812,143 @@ def main():
             if count >= 3:
                 saturated_decades.add(dec)
         if saturated_decades:
-            print(f"Decenas saturadas en último sorteo ({last_mod_draw['fecha']}): {[d*10 for d in saturated_decades]} (se limitan a max 2 números)")
-        
-    # Generar combinaciones viables a partir del Pool reducido
-    print("\nFiltrando combinaciones válidas del Pool...")
-    todas_combinaciones = list(itertools.combinations(sorted(top_pool), 6))
+            print(f"Decenas saturadas en último sorteo ({last_mod_draw['fecha']}): {[d*10 for d in saturated_decades]}")
+
+    pool_9_base = select_balanced_pool_9(borda, saturated_decades=saturated_decades, pool_size=9)
+    pool_9_day = select_balanced_pool_9(borda_day, saturated_decades=saturated_decades, pool_size=9)
+    pool_10_hib = select_balanced_pool_9(borda_hib, saturated_decades=saturated_decades, pool_size=10)
     
-    boletos_viables = [combo for combo in todas_combinaciones if es_ticket_valido(combo, recent_numbers, saturated_decades)]
-    if not boletos_viables:
-        boletos_viables = [combo for combo in todas_combinaciones if es_ticket_valido(combo, saturated_decades=saturated_decades)]
-    if not boletos_viables:
-        boletos_viables = [combo for combo in todas_combinaciones if es_ticket_valido(combo)]
-    if not boletos_viables:
-        boletos_viables = todas_combinaciones[:100]
+    print("\n==================================================")
+    print(f"MODELO ESPECIALIZADO POR DÍA ({weekday_name.upper()}):")
+    print(f" -> Pool Base {target_mod} (9): {pool_9_base}")
+    print(f" -> Pool Día {weekday_name} (9): {pool_9_day}")
+    print(f" -> Pool Cobertura Híbrida (10): {pool_10_hib}")
+    print(f"==================================================")
+
+    # Precomputar pares antagónicos para filtrado físico
+    antagonist_pairs = compute_antagonist_pairs(draws)
+    print(f" -> Pares antagónicos bloqueados (Lift < 0.40): {len(antagonist_pairs)}")
+
+    # Generar números calientes recientes de los últimos 5 sorteos secuenciales
+    recent_numbers = set()
+    for d in draws[-5:]:
+        recent_numbers.update(d['numbers'])
         
-    print(f"Total combinaciones posibles en Pool: {len(todas_combinaciones)}")
-    print(f"Total combinaciones físicamente viables: {len(boletos_viables)}")
+# Saturated decades precomputadas arriba
+
+    # Filtrar combinaciones con Filtro Anti-Congestión (3 decenas) y Bloqueo Antagónico
+    def get_viable_combos(pool):
+        combos = list(itertools.combinations(pool, 6))
+        # 1. Intentar con 3 decenas distintas y pares antagónicos
+        v = [c for c in combos if es_ticket_valido(c, recent_numbers, saturated_decades, antagonist_pairs, min_distinct_decades=3)]
+        if len(v) < 3:
+            v = [c for c in combos if es_ticket_valido(c, recent_numbers, saturated_decades, min_distinct_decades=3)]
+        if len(v) < 3:
+            v = combos[:10]
+        return v
+
+    viable_base = get_viable_combos(pool_9_base)
+    viable_day = get_viable_combos(pool_9_day)
+    viable_hib = get_viable_combos(pool_10_hib)
+
+    print(f"Combinaciones viables: Base={len(viable_base)}, Día={len(viable_day)}, Híbrido={len(viable_hib)}")
+
+    # Generar terna base de máximo rendimiento
+    t_base = select_optimal_wheel_triplet(viable_base, pool_9_base, borda, cooccur_exp_mat, max_overlap=4, w_cooccur=350.0)
+
+    # -------------------------------------------------------------
+    # PORTFOLIO ESPECIALIZADO DE 3 BOLETOS (1 CUPÓN HABITUAL)
+    # Boleto 1: Cazador Tradicional (Modelo A)
+    # Boleto 2: Especialista Día de la Semana (Modelo B)
+    # Boleto 3: Consenso / Cobertura Híbrida (Modelo C)
+    # -------------------------------------------------------------
+    b1 = t_base[0]
     
-    # Generación de 3 boletos con Diseño Balanceado BIBD 2-Fold (Trío Núcleo C(3,2) + Máxima Densidad de Pares)
-    print("\nSeleccionando 3 boletos con Diseño Balanceado BIBD 2-Fold (Trío Núcleo C(3,2))...")
-    tickets_optimos = select_optimal_wheel_triplet(
-        boletos_viables=boletos_viables,
-        pool=sorted(top_pool),
-        scores=borda,
-        cooccur_matrix=cooccur_exp_mat,
-        max_overlap=4,
-        w_cooccur=350.0
+    # Guardián de Solapamiento para Boleto 2 (2 <= overlap <= 4 con B1)
+    cands_b2 = [c for c in viable_day if 2 <= len(set(c) & set(b1)) <= 4]
+    if not cands_b2:
+        cands_b2 = [c for c in viable_day if c != b1]
+    b2 = max(cands_b2, key=lambda c: sum(borda_day[n] for n in c) + 350.0 * sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(c, 2)))
+    
+    # Guardián de Solapamiento para Boleto 3 (2 <= overlap <= 4 con B1 y B2, triple overlap <= 2, maximizar cuádruplas)
+    q12 = set(itertools.combinations(b1, 4)) | set(itertools.combinations(b2, 4))
+    cands_b3 = [
+        c for c in viable_hib
+        if (2 <= len(set(c) & set(b1)) <= 4) and (2 <= len(set(c) & set(b2)) <= 4) and len(set(b1) & set(b2) & set(c)) <= 2
+    ]
+    if not cands_b3:
+        cands_b3 = [c for c in viable_hib if c != b1 and c != b2 and len(set(c) & set(b1)) <= 4 and len(set(c) & set(b2)) <= 4]
+    if not cands_b3:
+        cands_b3 = [c for c in viable_hib if c != b1 and c != b2]
+        
+    b3 = max(
+        cands_b3,
+        key=lambda c: sum(borda_hib[n] for n in c) + 350.0 * sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(c, 2)) + 80.0 * len(set(itertools.combinations(c, 4)) - q12)
     )
-    
-    # Simular la probabilidad acumulada conjunta de éxito
-    print("Estimando probabilidad acumulada de éxito mediante simulación Monte Carlo...")
+    tickets_optimos = [b1, b2, b3]
+
+    total_unique_numbers = sorted(list(set(b1) | set(b2) | set(b3)))
+
+    # Simular probabilidad de éxito conjunta
     prob_exito = estimar_probabilidad_exito_conjunto(tickets_optimos, probs_t)
     
-    # Calcular probabilidades individuales estimadas por el modelo
     individual_probs = []
+    breakdown_probs = []
     for b in tickets_optimos:
         c_probs = [probs_t[n] for n in sorted(b)]
         h3, h4, h5, h6 = prob_hits_poisson_binomial_flat(c_probs)
-        individual_probs.append((h3 + h4 + h5 + h6) * 100)
+        p_tot = (h3 + h4 + h5 + h6) * 100
+        p_premio_4plus = (h4 + h5 + h6) * 100
+        individual_probs.append(p_tot)
+        breakdown_probs.append((h3 * 100, p_premio_4plus))
     
+    # Cálculo del Índice de Convicción del Sorteo (ICS: 0 a 100)
+    score_regime = 30 if avg_repeats <= 0.5 or avg_repeats >= 1.0 else 20
+    score_res = 25 if resonance_detected else 15
+    score_quad = int(20 * (len(q12 | set(itertools.combinations(b3, 4))) / 45.0))
+    # Consenso entre modelos (amplitud del Borda Top 9 vs Media)
+    top_borda_mean = np.mean([borda[n] for n in pool_9_base])
+    all_borda_mean = np.mean(list(borda.values()))
+    score_consensus = min(25, int(15 * (top_borda_mean / (all_borda_mean + 1e-5))))
+    ics_score = min(99, score_regime + score_res + score_quad + score_consensus)
+    ics_label = "ALTA" if ics_score >= 80 else ("MEDIA-ALTA" if ics_score >= 65 else "ESTÁNDAR")
+
     print("\n==================================================")
-    print("BOLETOS RECOMENDADOS (OPTIMIZACIÓN CLIQUE & PAIR DENSITY):")
+    print("PORTFOLIO ESPECIALIZADO DE 3 BOLETOS (QUINI 6):")
+    print(f"Total números únicos jugados en el cupón: {len(total_unique_numbers)} {total_unique_numbers}")
+    print(f"Índice de Convicción Matemática del Sorteo (ICS): {ics_score}/100 [{ics_label}]")
     print("==================================================")
     ticket_names = [
-        "SUPER TICKET A (CORE SPIKE DENSITY - BIBD PAIR A-B)",
-        "SUPER TICKET B (ANCHORED CLUSTER SYNERGY - BIBD PAIR A-C)",
-        "SUPER TICKET C (BALANCED COVERAGE OPTIMIZER - BIBD PAIR B-C)"
+        f"SUPER TICKET 1 [ESPECIALISTA {target_mod.upper()} - MÁXIMO POZO]",
+        f"SUPER TICKET 2 [ESPECIALISTA DÍA {weekday_name.upper()} - ARRASTRE MULTI-MODAL]",
+        f"SUPER TICKET 3 [CONSENSO HÍBRIDO - RED DE COBERTURA POZO EXTRA]"
     ]
     tickets_json = []
     for idx, ticket in enumerate(tickets_optimos):
         t_sorted = [int(x) for x in sorted(ticket)]
-        t_name = ticket_names[idx] if idx < len(ticket_names) else f"SUPER TICKET {idx+1}"
-        print(f"Boleto {idx+1:02d} [{t_name}]: {t_sorted} | Prob. Individual de Acierto (3+): {individual_probs[idx]:.2f}%")
+        t_name = ticket_names[idx]
+        h3_pct, h4_pct = breakdown_probs[idx]
+        print(f"Boleto {idx+1:02d} [{t_name}]:")
+        print(f"  👉 Números: {t_sorted}")
+        print(f"  👉 Prob. Total (3+): {individual_probs[idx]:.2f}% | 3 aciertos: {h3_pct:.2f}% | 4+ aciertos (PREMIO): {h4_pct:.2f}%\n")
         tickets_json.append({
             "nombre": t_name,
-            "numeros": [int(x) for x in t_sorted]
+            "numeros": [int(x) for x in t_sorted],
+            "prob_3_plus": round(individual_probs[idx], 2),
+            "prob_premio_4_plus": round(h4_pct, 2)
         })
     print("==================================================")
     print(f"PROBABILIDAD ACUMULADA CONJUNTA (3+ aciertos en al menos 1 boleto): {prob_exito:.2f}%")
     print(f"Desempeño relativo frente al azar: {(prob_exito / 5.48):.2f}x superior")
     print("==================================================")
 
+    top_pool = total_unique_numbers
+
     # Export to proxima_prediccion.json and historial_predicciones.json
     pred_data = {
         "fecha_prediccion": datetime.now().isoformat(),
         "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
-        "juego": "Quini 6 (Super-Modelo Combinado - Adaptive Dynamic Pool + Cross-Modal Transitions)",
+        "juego": "Quini 6 (Super-Modelo Dinámico por Régimen + Rueda Balanceada 2-Fold BIBD)",
         "top_numeros": [int(x) for x in sorted(top_pool)],
         "tickets": tickets_json
     }

@@ -1,0 +1,115 @@
+[
+  {
+    "fecha_auditoria": "2026-11-10T11:21:05.611806",
+    "sorteo": 3424,
+    "resultados_reales": {
+      "Tradicional": [
+        1,
+        16,
+        25,
+        29,
+        37,
+        43
+      ],
+      "Segunda": [
+        20,
+        21,
+        34,
+        35,
+        38,
+        39
+      ],
+      "Revancha": [
+        8,
+        9,
+        10,
+        17,
+        21,
+        32
+      ],
+      "SiempreSale": [
+        7,
+        14,
+        31,
+        36,
+        42,
+        45
+      ]
+    },
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET 1 [ESPECIALISTA TRADICIONAL - MÁXIMO POZO]",
+        "numeros": [
+          1,
+          7,
+          12,
+          26,
+          27,
+          31
+        ],
+        "aciertos_tradicional": [
+          1
+        ],
+        "aciertos_segunda": [],
+        "aciertos_revancha": [],
+        "aciertos_siempre_sale": [
+          7,
+          31
+        ],
+        "aciertos_pozo_extra": [
+          1
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET 2 [ESPECIALISTA DÍA MIÉRCOLES - ARRASTRE MULTI-MODAL]",
+        "numeros": [
+          1,
+          7,
+          14,
+          25,
+          41,
+          43
+        ],
+        "aciertos_tradicional": [
+          1,
+          25,
+          43
+        ],
+        "aciertos_segunda": [],
+        "aciertos_revancha": [],
+        "aciertos_siempre_sale": [
+          7,
+          14
+        ],
+        "aciertos_pozo_extra": [
+          1,
+          25,
+          43
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET 3 [CONSENSO HÍBRIDO - RED DE COBERTURA POZO EXTRA]",
+        "numeros": [
+          1,
+          5,
+          7,
+          12,
+          14,
+          41
+        ],
+        "aciertos_tradicional": [
+          1
+        ],
+        "aciertos_segunda": [],
+        "aciertos_revancha": [],
+        "aciertos_siempre_sale": [
+          7,
+          14
+        ],
+        "aciertos_pozo_extra": [
+          1
+        ]
+      }
+    ]
+  }
+]

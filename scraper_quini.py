@@ -29,15 +29,15 @@ def fetch_html(url: str) -> Optional[str]:
         return None
 
 def get_last_sorteo_in_csv() -> int:
-    if not os.path.exists(CSV_LIMPIO_PATH):
+    if not os.path.exists(CSV_COMPLETO_PATH):
         return 0
-    with open(CSV_LIMPIO_PATH, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-        for line in lines[1:]:
+    max_s = 0
+    with open(CSV_COMPLETO_PATH, 'r', encoding='utf-8') as f:
+        for line in f:
             parts = line.strip().split(',')
             if parts and parts[0].isdigit():
-                return int(parts[0])
-    return 0
+                max_s = max(max_s, int(parts[0]))
+    return max_s
 
 def parse_sorteo_html(html: str, sorteo_num: int, fecha_str: str) -> Optional[SorteoData]:
     modalidades: Dict[str, List[str]] = {}
@@ -137,8 +137,8 @@ def actualizar_csv_completo(nuevos: List[SorteoData]):
 
     with open(CSV_COMPLETO_PATH, 'w', encoding='utf-8') as f:
         f.write(header)
-        f.writelines(new_rows)
         f.writelines(filtered_lines)
+        f.writelines(new_rows)
     print(f"[OK] {CSV_COMPLETO_PATH} actualizado exitosamente.")
 
 def actualizar_csv_limpio(nuevos: List[SorteoData]):
@@ -162,8 +162,8 @@ def actualizar_csv_limpio(nuevos: List[SorteoData]):
 
     with open(CSV_LIMPIO_PATH, 'w', encoding='utf-8') as f:
         f.write(header)
-        f.writelines(new_rows)
         f.writelines(filtered_lines)
+        f.writelines(new_rows)
     print(f"[OK] {CSV_LIMPIO_PATH} actualizado exitosamente.")
 
 def main():
