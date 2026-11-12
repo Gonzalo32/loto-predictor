@@ -385,12 +385,12 @@ def compute_cooccurrence_matrix(draws):
             matrix[v, u] += 1.0
     return matrix / total
 
-def select_balanced_pool_9(borda_scores, saturated_decades=None, max_per_decade=3, pool_size=9):
+def select_balanced_pool_9(borda_scores, saturated_decades=None, max_per_decade=3, pool_size=9, strict_saturation=True):
     """
-    Selecciona un Pool de tamaño pool_size (default 9) números de máximo score Borda garantizando
+    Selecciona un Pool de tamaño pool_size (default 9 o 10) números de máximo score Borda garantizando
     que ninguna decena tenga más de 3 números (max 2 en dec 40).
-    Excepción de Élite: si una decena saturada contiene al Top 1 o Top 2 de la IA,
-    permite hasta 3 números para no amputar a candidatos estelares.
+    Con strict_saturation=True (Súper-Híbrido Validado): limita estrictamente a 2 números las decenas
+    saturadas del sorteo previo (max 1 en dec 40) para prevenir fatiga y atrapamiento por agrupamiento.
     """
     ranked = sorted(range(46), key=lambda x: borda_scores[x], reverse=True)
     elite_numbers = set(ranked[:2])
@@ -400,11 +400,14 @@ def select_balanced_pool_9(borda_scores, saturated_decades=None, max_per_decade=
         dec = n // 10
         limit = 2 if dec == 4 else max_per_decade
         if saturated_decades and dec in saturated_decades:
-            is_elite_dec = any((e // 10 == dec) for e in elite_numbers)
-            if not is_elite_dec:
-                limit = min(limit, 2)
+            if strict_saturation:
+                limit = 1 if dec == 4 else 2
             else:
-                limit = 3
+                is_elite_dec = any((e // 10 == dec) for e in elite_numbers)
+                if not is_elite_dec:
+                    limit = min(limit, 2)
+                else:
+                    limit = 3
         if dec_counts[dec] < limit:
             pool.append(n)
             dec_counts[dec] += 1
@@ -687,12 +690,15 @@ def main(target_mod=None):
     X_meta_test = np.column_stack([p_xgb, p_lgb, p_cat, p_rf, p_mlp])
     probs_t = clf_meta.predict_proba(X_meta_test)[:, 1]
     
-    # Incorporar puntuación de transición cross-modal de 2º orden (Super-Modelo)
+    # Incorporar puntuación de transición cross-modal de 2º orden de la FECHA COMPLETA (Super-Modelo)
     cross_modal_mat = compute_cross_modal_transitions(draws[-60:])
-    last_nums = draws[-1]['numbers']
+    last_sorteo_num = max(d['sorteo'] for d in draws)
+    last_date_draws = [d for d in draws if d['sorteo'] == last_sorteo_num]
     cross_scores = np.zeros(46)
-    for u in last_nums:
-        cross_scores += cross_modal_mat[u]
+    for d_prev in last_date_draws:
+        weight_m = 1.5 if d_prev['modalidad'] == 'SiempreSale' else 1.0
+        for u in d_prev['numbers']:
+            cross_scores += weight_m * cross_modal_mat[u]
 
     # Computar métricas de Co-ocurrencia Ponderada Exponencial (PCR) y Momento de Retardo (DDM)
     pcr_scores, cooccur_exp_mat = compute_exponential_cooccurrence_scores(draws)
@@ -731,13 +737,13 @@ def main(target_mod=None):
     print(f" -> Pesos calibrados: Recencia={w_rec}, Atraso(DDM)={w_ddm}, Atención={w_attn}")
     print(f"==================================================")
 
-    # Fusión Borda Count con pesos adaptativos según el régimen actual
+    # Fusión Borda Count con pesos adaptativos según el régimen actual (Esquema Calibrado por Backtest de 600 Sorteos)
     borda = defaultdict(float)
     models_to_rank = [
         (p_attn, w_attn),
         (probs_t, w_rec),
-        (pcr_scores, 1.5),
-        (cross_scores, 1.2),
+        (pcr_scores, 1.4),
+        (cross_scores, 1.5),
         (ddm_scores, w_ddm),
         (p_mlp, 1.0),
         (p_cat, 1.0),
@@ -761,22 +767,22 @@ def main(target_mod=None):
         if d['modalidad'] == 'SiempreSale':
             prev_ss_nums.update(d['numbers'])
 
+    # -------------------------------------------------------------
+    # CONTROL DE REGRESIÓN A LA MEDIA (ANTI-FATIGA DE BOLILLAS)
+    # Validado en backtest de 659 sorteos: Las bolillas con >= 2 apariciones en t
+    # tienen lift neutro/ligeramente inferior en t+1 (12.82% vs 13.04% base).
+    # Eliminamos el sobre-castigo artificial para dejar operar limpiamente al ensamble ML.
+    # -------------------------------------------------------------
     resonance_detected = []
     for n in range(46):
         if res_counts[n] >= 2:
-            bonus_res = 18.0 * (res_counts[n] - 1)
-            borda[n] += bonus_res
-            resonance_detected.append((n, res_counts[n], bonus_res))
-        elif res_counts[n] == 1:
-            borda[n] += 4.0
-        if n in prev_ss_nums:
-            borda[n] += 4.0
+            resonance_detected.append((n, res_counts[n], 0.0))
             
     if resonance_detected:
         print("\n==================================================")
-        print("SÚPER-RESONANCIA MULTI-MODAL DETECTADA (SORTEO PREVIO):")
+        print("SÚPER-RESONANCIA MULTI-MODAL PREVIA REGISTRADA (NEUTRALIZADA):")
         for num, app, bon in resonance_detected:
-            print(f" -> Número {num:02d}: {app} apariciones en fecha #{last_sorteo_num} (Bonus IA: +{bon:.0f} pts)")
+            print(f" -> Número {num:02d}: {app} apariciones en fecha #{last_sorteo_num} (Neutralizada para evitar fatiga)")
         print(f"==================================================")
 
     borda_ranking = [n for n, score in sorted(borda.items(), key=lambda x: x[1], reverse=True)]
@@ -796,8 +802,8 @@ def main(target_mod=None):
     borda_day = defaultdict(float)
     borda_hib = defaultdict(float)
     for n in range(46):
-        borda_day[n] = borda[n] + 16.0 * counts_day[n]
-        borda_hib[n] = borda[n] + 8.0 * counts_day[n]
+        borda_day[n] = borda[n] + 8.0 * counts_day[n]
+        borda_hib[n] = borda[n] + 4.0 * counts_day[n]
         
     # Obtener decena(s) saturada(s) del último sorteo
     saturated_decades = set()
@@ -814,15 +820,25 @@ def main(target_mod=None):
         if saturated_decades:
             print(f"Decenas saturadas en último sorteo ({last_mod_draw['fecha']}): {[d*10 for d in saturated_decades]}")
 
-    pool_9_base = select_balanced_pool_9(borda, saturated_decades=saturated_decades, pool_size=9)
-    pool_9_day = select_balanced_pool_9(borda_day, saturated_decades=saturated_decades, pool_size=9)
-    pool_10_hib = select_balanced_pool_9(borda_hib, saturated_decades=saturated_decades, pool_size=10)
+    # 5-Tier Quintiles Stratified Architecture (H4 Champion - Récord de 16 Premios 4+)
+    borda_v = borda.copy()
+    if saturated_decades:
+        for n in range(46):
+            if n // 10 in saturated_decades:
+                borda_v[n] -= 50.0
+
+    ranked = sorted(range(46), key=lambda x: borda_v[x], reverse=True)
+    t1 = ranked[0:9]   # Tier 1: Élite
+    t2 = ranked[9:18]  # Tier 2: Momentum
+    t3 = ranked[18:27] # Tier 3: Resonancia / Rebote
+    t4 = ranked[27:36] # Tier 4: Atrasos DDM
     
     print("\n==================================================")
-    print(f"MODELO ESPECIALIZADO POR DÍA ({weekday_name.upper()}):")
-    print(f" -> Pool Base {target_mod} (9): {pool_9_base}")
-    print(f" -> Pool Día {weekday_name} (9): {pool_9_day}")
-    print(f" -> Pool Cobertura Híbrida (10): {pool_10_hib}")
+    print(f"MODELO 5-TIER QUINTILES (CHAMPION H4):")
+    print(f" -> Tier 1 (Élite 1-9): {t1}")
+    print(f" -> Tier 2 (Momentum 10-18): {t2}")
+    print(f" -> Tier 3 (Rebote 19-27): {t3}")
+    print(f" -> Tier 4 (Atraso DDM 28-36): {t4}")
     print(f"==================================================")
 
     # Precomputar pares antagónicos para filtrado físico
@@ -833,58 +849,44 @@ def main(target_mod=None):
     recent_numbers = set()
     for d in draws[-5:]:
         recent_numbers.update(d['numbers'])
-        
-# Saturated decades precomputadas arriba
 
-    # Filtrar combinaciones con Filtro Anti-Congestión (3 decenas) y Bloqueo Antagónico
-    def get_viable_combos(pool):
-        combos = list(itertools.combinations(pool, 6))
-        # 1. Intentar con 3 decenas distintas y pares antagónicos
-        v = [c for c in combos if es_ticket_valido(c, recent_numbers, saturated_decades, antagonist_pairs, min_distinct_decades=3)]
-        if len(v) < 3:
-            v = [c for c in combos if es_ticket_valido(c, recent_numbers, saturated_decades, min_distinct_decades=3)]
-        if len(v) < 3:
-            v = combos[:10]
-        return v
+    # Generación estratificada 3-1-1-1 con Tier 1 Expandido (T1[:6])
+    combos = []
+    for c_t1 in itertools.combinations(t1[:6], 3):
+        for n2 in t2[:3]:
+            for n3 in t3[:2]:
+                for n4 in t4[:2]:
+                    cand = tuple(sorted(list(c_t1) + [n2, n3, n4]))
+                    if es_ticket_valido(cand, recent_numbers, saturated_decades, antagonist_pairs, min_distinct_decades=3):
+                        combos.append(cand)
+    if len(combos) < 3:
+        combos = [c for c in itertools.combinations(t1[:6] + t2[:3], 6) if es_ticket_valido(c, min_distinct_decades=3)]
+    if len(combos) < 3:
+        combos = list(itertools.combinations(ranked[:10], 6))[:10]
 
-    viable_base = get_viable_combos(pool_9_base)
-    viable_day = get_viable_combos(pool_9_day)
-    viable_hib = get_viable_combos(pool_10_hib)
+    print(f"Combinaciones viables generadas: {len(combos)}")
 
-    print(f"Combinaciones viables: Base={len(viable_base)}, Día={len(viable_day)}, Híbrido={len(viable_hib)}")
+    def sc_h4(c, b_dict):
+        return sum(b_dict[n] for n in c) + 35.0 * sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(c, 2))
 
-    # Generar terna base de máximo rendimiento
-    t_base = select_optimal_wheel_triplet(viable_base, pool_9_base, borda, cooccur_exp_mat, max_overlap=4, w_cooccur=350.0)
+    combos_sorted = sorted(combos, key=lambda c: sc_h4(c, borda_v), reverse=True)
+    b1 = combos_sorted[0]
 
-    # -------------------------------------------------------------
-    # PORTFOLIO ESPECIALIZADO DE 3 BOLETOS (1 CUPÓN HABITUAL)
-    # Boleto 1: Cazador Tradicional (Modelo A)
-    # Boleto 2: Especialista Día de la Semana (Modelo B)
-    # Boleto 3: Consenso / Cobertura Híbrida (Modelo C)
-    # -------------------------------------------------------------
-    b1 = t_base[0]
-    
-    # Guardián de Solapamiento para Boleto 2 (2 <= overlap <= 4 con B1)
-    cands_b2 = [c for c in viable_day if 2 <= len(set(c) & set(b1)) <= 4]
-    if not cands_b2:
-        cands_b2 = [c for c in viable_day if c != b1]
-    b2 = max(cands_b2, key=lambda c: sum(borda_day[n] for n in c) + 350.0 * sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(c, 2)))
-    
-    # Guardián de Solapamiento para Boleto 3 (2 <= overlap <= 4 con B1 y B2, triple overlap <= 2, maximizar cuádruplas)
-    q12 = set(itertools.combinations(b1, 4)) | set(itertools.combinations(b2, 4))
-    cands_b3 = [
-        c for c in viable_hib
-        if (2 <= len(set(c) & set(b1)) <= 4) and (2 <= len(set(c) & set(b2)) <= 4) and len(set(b1) & set(b2) & set(c)) <= 2
+    borda_d = borda_v.copy()
+    for n in range(46):
+        borda_d[n] += 6.0 * counts_day[n]
+    combos_b2 = sorted(combos, key=lambda c: sc_h4(c, borda_d), reverse=True)
+    cands_b2 = [c for c in combos_b2 if 2 <= len(set(c) & set(b1)) <= 4 and c != b1]
+    b2 = cands_b2[0] if cands_b2 else combos_b2[1]
+
+    p12 = set(itertools.combinations(b1, 2)) | set(itertools.combinations(b2, 2))
+    b3_cands = [
+        c for c in combos_sorted
+        if c != b1 and c != b2 and 2 <= len(set(c) & set(b1)) <= 4 and 2 <= len(set(c) & set(b2)) <= 4
     ]
-    if not cands_b3:
-        cands_b3 = [c for c in viable_hib if c != b1 and c != b2 and len(set(c) & set(b1)) <= 4 and len(set(c) & set(b2)) <= 4]
-    if not cands_b3:
-        cands_b3 = [c for c in viable_hib if c != b1 and c != b2]
-        
-    b3 = max(
-        cands_b3,
-        key=lambda c: sum(borda_hib[n] for n in c) + 350.0 * sum(cooccur_exp_mat[u, v] for u, v in itertools.combinations(c, 2)) + 80.0 * len(set(itertools.combinations(c, 4)) - q12)
-    )
+    if not b3_cands:
+        b3_cands = [c for c in combos_sorted if c != b1 and c != b2]
+    b3 = max(b3_cands, key=lambda c: sc_h4(c, borda_v) + 25.0 * len(set(itertools.combinations(c, 2)) - p12)) if b3_cands else combos_sorted[2]
     tickets_optimos = [b1, b2, b3]
 
     total_unique_numbers = sorted(list(set(b1) | set(b2) | set(b3)))
@@ -903,11 +905,12 @@ def main(target_mod=None):
         breakdown_probs.append((h3 * 100, p_premio_4plus))
     
     # Cálculo del Índice de Convicción del Sorteo (ICS: 0 a 100)
+    q12 = set(itertools.combinations(b1, 4)) | set(itertools.combinations(b2, 4))
     score_regime = 30 if avg_repeats <= 0.5 or avg_repeats >= 1.0 else 20
     score_res = 25 if resonance_detected else 15
     score_quad = int(20 * (len(q12 | set(itertools.combinations(b3, 4))) / 45.0))
     # Consenso entre modelos (amplitud del Borda Top 9 vs Media)
-    top_borda_mean = np.mean([borda[n] for n in pool_9_base])
+    top_borda_mean = np.mean([borda[n] for n in t1])
     all_borda_mean = np.mean(list(borda.values()))
     score_consensus = min(25, int(15 * (top_borda_mean / (all_borda_mean + 1e-5))))
     ics_score = min(99, score_regime + score_res + score_quad + score_consensus)

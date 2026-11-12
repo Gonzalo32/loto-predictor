@@ -111,5 +111,103 @@
         ]
       }
     ]
+  },
+  {
+    "fecha_auditoria": "2026-11-12T08:38:30.945578",
+    "sorteo": 3425,
+    "resultados_reales": {
+      "Tradicional": [
+        2,
+        24,
+        25,
+        32,
+        37,
+        40
+      ],
+      "Segunda": [
+        0,
+        6,
+        17,
+        28,
+        33,
+        37
+      ],
+      "Revancha": [
+        15,
+        27,
+        36,
+        37,
+        40,
+        42
+      ],
+      "SiempreSale": [
+        10,
+        27,
+        28,
+        33,
+        36,
+        38
+      ]
+    },
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET 1 [ESPECIALISTA TRADICIONAL]",
+        "numeros": [
+          1,
+          7,
+          12,
+          26,
+          27,
+          31
+        ],
+        "aciertos_tradicional": [],
+        "aciertos_segunda": [],
+        "aciertos_revancha": [
+          27
+        ],
+        "aciertos_siempre_sale": [
+          27
+        ],
+        "aciertos_pozo_extra": [
+          27
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET 2 [ESPECIALISTA MIÉRCOLES]",
+        "numeros": [
+          1,
+          7,
+          14,
+          25,
+          41,
+          43
+        ],
+        "aciertos_tradicional": [
+          25
+        ],
+        "aciertos_segunda": [],
+        "aciertos_revancha": [],
+        "aciertos_siempre_sale": [],
+        "aciertos_pozo_extra": [
+          25
+        ]
+      },
+      {
+        "nombre": "SUPER TICKET 3 [CONSENSO HÍBRIDO]",
+        "numeros": [
+          5,
+          7,
+          14,
+          21,
+          31,
+          39
+        ],
+        "aciertos_tradicional": [],
+        "aciertos_segunda": [],
+        "aciertos_revancha": [],
+        "aciertos_siempre_sale": [],
+        "aciertos_pozo_extra": []
+      }
+    ]
   }
 ]
