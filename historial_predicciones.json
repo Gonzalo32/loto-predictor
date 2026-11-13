@@ -4576,5 +4576,300 @@
         "prob_premio_4_plus": 2.02
       }
     ]
+  },
+  {
+    "fecha_prediccion": "2026-11-12T13:52:52.672695",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Dinámico por Régimen + Rueda Balanceada 2-Fold BIBD)",
+    "top_numeros": [
+      0,
+      1,
+      6,
+      9,
+      10,
+      23,
+      25,
+      31,
+      39,
+      40,
+      43
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET 1 [ESPECIALISTA TRADICIONAL - MÁXIMO POZO]",
+        "numeros": [
+          0,
+          1,
+          6,
+          23,
+          25,
+          43
+        ],
+        "prob_3_plus": 16.77,
+        "prob_premio_4_plus": 3.24
+      },
+      {
+        "nombre": "SUPER TICKET 2 [ESPECIALISTA DÍA DOMINGO - ARRASTRE MULTI-MODAL]",
+        "numeros": [
+          0,
+          1,
+          23,
+          39,
+          40,
+          43
+        ],
+        "prob_3_plus": 16.42,
+        "prob_premio_4_plus": 2.81
+      },
+      {
+        "nombre": "SUPER TICKET 3 [CONSENSO HÍBRIDO - RED DE COBERTURA POZO EXTRA]",
+        "numeros": [
+          0,
+          6,
+          9,
+          10,
+          23,
+          31
+        ],
+        "prob_3_plus": 20.91,
+        "prob_premio_4_plus": 4.55
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-11-13T09:50:27.860888",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Dinámico por Régimen + Rueda Balanceada 2-Fold BIBD)",
+    "top_numeros": [
+      0,
+      1,
+      6,
+      9,
+      10,
+      23,
+      25,
+      31,
+      39,
+      40,
+      43
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET 1 [ESPECIALISTA TRADICIONAL - MÁXIMO POZO]",
+        "numeros": [
+          0,
+          1,
+          6,
+          23,
+          25,
+          43
+        ],
+        "prob_3_plus": 16.77,
+        "prob_premio_4_plus": 3.24
+      },
+      {
+        "nombre": "SUPER TICKET 2 [ESPECIALISTA DÍA DOMINGO - ARRASTRE MULTI-MODAL]",
+        "numeros": [
+          0,
+          1,
+          23,
+          39,
+          40,
+          43
+        ],
+        "prob_3_plus": 16.42,
+        "prob_premio_4_plus": 2.81
+      },
+      {
+        "nombre": "SUPER TICKET 3 [CONSENSO HÍBRIDO - RED DE COBERTURA POZO EXTRA]",
+        "numeros": [
+          0,
+          6,
+          9,
+          10,
+          23,
+          31
+        ],
+        "prob_3_plus": 20.91,
+        "prob_premio_4_plus": 4.55
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-11-13T11:19:33.224236",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Dinámico por Régimen + Rueda Balanceada 2-Fold BIBD)",
+    "top_numeros": [
+      0,
+      1,
+      6,
+      9,
+      10,
+      23,
+      25,
+      31,
+      39,
+      40,
+      43
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET 1 [ESPECIALISTA TRADICIONAL - MÁXIMO POZO]",
+        "numeros": [
+          0,
+          1,
+          6,
+          23,
+          25,
+          43
+        ],
+        "prob_3_plus": 16.77,
+        "prob_premio_4_plus": 3.24
+      },
+      {
+        "nombre": "SUPER TICKET 2 [ESPECIALISTA DÍA DOMINGO - ARRASTRE MULTI-MODAL]",
+        "numeros": [
+          0,
+          1,
+          23,
+          39,
+          40,
+          43
+        ],
+        "prob_3_plus": 16.42,
+        "prob_premio_4_plus": 2.81
+      },
+      {
+        "nombre": "SUPER TICKET 3 [CONSENSO HÍBRIDO - RED DE COBERTURA POZO EXTRA]",
+        "numeros": [
+          0,
+          6,
+          9,
+          10,
+          23,
+          31
+        ],
+        "prob_3_plus": 20.91,
+        "prob_premio_4_plus": 4.55
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-11-13T11:33:46.578658",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Dinámico por Régimen + Rueda Balanceada 2-Fold BIBD)",
+    "top_numeros": [
+      0,
+      1,
+      5,
+      6,
+      9,
+      12,
+      23,
+      25,
+      39,
+      40,
+      43
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET 1 [ESPECIALISTA TRADICIONAL - MÁXIMO POZO]",
+        "numeros": [
+          0,
+          1,
+          6,
+          23,
+          25,
+          43
+        ],
+        "prob_3_plus": 16.77,
+        "prob_premio_4_plus": 3.24
+      },
+      {
+        "nombre": "SUPER TICKET 2 [ESPECIALISTA DÍA DOMINGO - ARRASTRE MULTI-MODAL]",
+        "numeros": [
+          0,
+          5,
+          6,
+          23,
+          39,
+          43
+        ],
+        "prob_3_plus": 18.4,
+        "prob_premio_4_plus": 3.86
+      },
+      {
+        "nombre": "SUPER TICKET 3 [CONSENSO HÍBRIDO - RED DE COBERTURA POZO EXTRA]",
+        "numeros": [
+          1,
+          5,
+          9,
+          12,
+          23,
+          40
+        ],
+        "prob_3_plus": 12.48,
+        "prob_premio_4_plus": 1.62
+      }
+    ]
+  },
+  {
+    "fecha_prediccion": "2026-11-13T11:41:18.242779",
+    "fecha_sorteo_objetivo": "Siguiente Sorteo (Domingo / Miércoles)",
+    "juego": "Quini 6 (Super-Modelo Dinámico por Régimen + Rueda Balanceada 2-Fold BIBD)",
+    "top_numeros": [
+      0,
+      1,
+      5,
+      6,
+      9,
+      12,
+      23,
+      25,
+      39,
+      40,
+      43
+    ],
+    "tickets": [
+      {
+        "nombre": "SUPER TICKET 1 [ESPECIALISTA TRADICIONAL - MÁXIMO POZO]",
+        "numeros": [
+          0,
+          1,
+          6,
+          23,
+          25,
+          43
+        ],
+        "prob_3_plus": 16.77,
+        "prob_premio_4_plus": 3.24
+      },
+      {
+        "nombre": "SUPER TICKET 2 [ESPECIALISTA DÍA DOMINGO - ARRASTRE MULTI-MODAL]",
+        "numeros": [
+          0,
+          5,
+          6,
+          23,
+          39,
+          43
+        ],
+        "prob_3_plus": 18.4,
+        "prob_premio_4_plus": 3.86
+      },
+      {
+        "nombre": "SUPER TICKET 3 [CONSENSO HÍBRIDO - RED DE COBERTURA POZO EXTRA]",
+        "numeros": [
+          1,
+          5,
+          9,
+          12,
+          23,
+          40
+        ],
+        "prob_3_plus": 12.48,
+        "prob_premio_4_plus": 1.62
+      }
+    ]
   }
 ]

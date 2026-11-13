@@ -82,6 +82,36 @@
       </div>
     </div>
 
+    <!-- Panel de Cálculos e Invariantes Macroscópicos Predichos -->
+    <div class="bg-gradient-to-r from-indigo-900/90 to-slate-900 p-4 rounded-2xl border border-indigo-700/50 shadow-md text-white">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-base">🧮</span>
+        <h3 class="text-sm font-extrabold uppercase tracking-wider text-amber-300">Cálculos e Invariantes Físicos Predichos para el Sorteo #3426</h3>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div class="bg-white/10 backdrop-blur p-2.5 rounded-xl border border-white/10">
+          <div class="text-indigo-200 text-[10px] uppercase font-bold">Suma Total Invariante (S6)</div>
+          <div class="text-base font-black text-amber-300 mt-0.5">147.6</div>
+          <div class="text-[10px] text-indigo-300">Banda resonante [130 - 166]</div>
+        </div>
+        <div class="bg-white/10 backdrop-blur p-2.5 rounded-xl border border-white/10">
+          <div class="text-indigo-200 text-[10px] uppercase font-bold">Paridad de Markov</div>
+          <div class="text-base font-black text-emerald-300 mt-0.5">78.3%</div>
+          <div class="text-[10px] text-indigo-300">Dominio de 2, 3 o 4 pares</div>
+        </div>
+        <div class="bg-white/10 backdrop-blur p-2.5 rounded-xl border border-white/10">
+          <div class="text-indigo-200 text-[10px] uppercase font-bold">Filtro de Persistencia</div>
+          <div class="text-base font-black text-cyan-300 mt-0.5">&le; 2 Números</div>
+          <div class="text-[10px] text-indigo-300">Repetidos de fecha previa</div>
+        </div>
+        <div class="bg-white/10 backdrop-blur p-2.5 rounded-xl border border-white/10">
+          <div class="text-indigo-200 text-[10px] uppercase font-bold">Consecutividad &amp; Rényi</div>
+          <div class="text-base font-black text-purple-300 mt-0.5">55% / H<sub>2</sub>=3.10</div>
+          <div class="text-[10px] text-indigo-300">Par 09-10 en B3 | Solap. 4</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Boletos Generados -->
     <div class="space-y-4">
       <div class="flex items-center justify-between">
@@ -98,23 +128,23 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
           <div>
             <span class="bg-blue-100 text-blue-800 text-xs font-extrabold px-2.5 py-0.5 rounded-md uppercase">Boleto 01</span>
-            <span class="text-sm font-bold text-gray-800 ml-2">Especialista Tradicional (Máximo Pozo)</span>
+            <span class="text-sm font-bold text-gray-800 ml-2">Especialista Tradicional (Solitón KdV + Breit-Wigner)</span>
           </div>
           <div class="text-xs text-gray-500 font-medium">
-            Prob. 3+: <strong class="text-emerald-600">30.27%</strong> | Premio 4+: <strong class="text-indigo-600">8.40%</strong>
+            Prob. 3+: <strong class="text-emerald-600">16.77%</strong> | Premio 4+: <strong class="text-indigo-600">3.24%</strong>
           </div>
         </div>
         <div class="flex flex-wrap gap-2.5 my-2">
+          <span class="ball ball-core" title="Ancla Núcleo">00</span>
           <span class="ball ball-core" title="Ancla Núcleo">01</span>
-          <span class="ball ball-normal">04</span>
-          <span class="ball ball-core" title="Ancla Núcleo">05</span>
-          <span class="ball ball-normal">23</span>
-          <span class="ball ball-normal" title="Arrastre Tradicional #3425">32</span>
+          <span class="ball ball-normal">06</span>
+          <span class="ball ball-core" title="Ancla Núcleo">23</span>
+          <span class="ball ball-normal">25</span>
           <span class="ball ball-normal">43</span>
         </div>
         <div class="mt-2 text-xs text-gray-500 flex justify-between items-center pt-2 border-t border-gray-100">
-          <span>Enfoque: Caza del Pozo Tradicional con anclas 01-05 y absorción de rebote en 32 y momentum en 23-43.</span>
-          <button onclick="copiarBoleto('01 - 04 - 05 - 23 - 32 - 43')" class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs">Copiar</button>
+          <span>Enfoque: Caza del Pozo Tradicional con solitón KdV en el toro circular, anclas 00-23 y resonancia Breit-Wigner.</span>
+          <button onclick="copiarBoleto('00 - 01 - 06 - 23 - 25 - 43')" class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs">Copiar</button>
         </div>
       </div>
 
@@ -123,23 +153,23 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
           <div>
             <span class="bg-amber-100 text-amber-800 text-xs font-extrabold px-2.5 py-0.5 rounded-md uppercase">Boleto 02</span>
-            <span class="text-sm font-bold text-gray-800 ml-2">Especialista Domingo (Arrastre Multi-Modal)</span>
+            <span class="text-sm font-bold text-gray-800 ml-2">Especialista Domingo + Segunda del Quini (Rényi Overlap 4)</span>
           </div>
           <div class="text-xs text-gray-500 font-medium">
-            Prob. 3+: <strong class="text-emerald-600">24.64%</strong> | Premio 4+: <strong class="text-indigo-600">5.72%</strong>
+            Prob. 3+: <strong class="text-emerald-600">18.40%</strong> | Premio 4+: <strong class="text-indigo-600">3.86%</strong>
           </div>
         </div>
         <div class="flex flex-wrap gap-2.5 my-2">
-          <span class="ball ball-core" title="Ancla Núcleo">01</span>
-          <span class="ball ball-core" title="Ancla Núcleo">05</span>
-          <span class="ball ball-normal">14</span>
-          <span class="ball ball-normal">23</span>
-          <span class="ball ball-normal" title="Armónico Dominical">31</span>
-          <span class="ball ball-normal">43</span>
+          <span class="ball ball-core" title="Ancla Núcleo">00</span>
+          <span class="ball ball-normal">05</span>
+          <span class="ball ball-normal">06</span>
+          <span class="ball ball-core" title="Ancla Núcleo">23</span>
+          <span class="ball ball-normal">39</span>
+          <span class="ball ball-core" title="Ancla Núcleo">43</span>
         </div>
         <div class="mt-2 text-xs text-gray-500 flex justify-between items-center pt-2 border-t border-gray-100">
-          <span>Enfoque: Inercia de día Domingo, enlace armónico dominical con 14-23-31-43 y solapamiento 4 con B1.</span>
-          <button onclick="copiarBoleto('01 - 05 - 14 - 23 - 31 - 43')" class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs">Copiar</button>
+          <span>Enfoque: Inercia de día Domingo, cuarteto cerrado con B1 (00-06-23-43) y captura de Segunda del Quini con 05 y 39.</span>
+          <button onclick="copiarBoleto('00 - 05 - 06 - 23 - 39 - 43')" class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs">Copiar</button>
         </div>
       </div>
 
@@ -148,23 +178,27 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
           <div>
             <span class="bg-purple-100 text-purple-800 text-xs font-extrabold px-2.5 py-0.5 rounded-md uppercase">Boleto 03</span>
-            <span class="text-sm font-bold text-gray-800 ml-2">Consenso Híbrido (Red Cuádruplas Pozo Extra)</span>
+            <span class="text-sm font-bold text-gray-800 ml-2">Consenso Híbrido + Halo Orbital (Red EPR + Pozo Extra 5+)</span>
           </div>
           <div class="text-xs text-gray-500 font-medium">
-            Prob. 3+: <strong class="text-emerald-600">13.39%</strong> | Premio 4+: <strong class="text-indigo-600">2.04%</strong>
+            Prob. 3+: <strong class="text-emerald-600">12.48%</strong> | Premio 4+: <strong class="text-indigo-600">1.62%</strong>
           </div>
         </div>
         <div class="flex flex-wrap gap-2.5 my-2">
-          <span class="ball ball-core" title="Ancla Núcleo">05</span>
-          <span class="ball ball-normal" title="Arrastre Siempre Sale #3425">10</span>
-          <span class="ball ball-normal">14</span>
-          <span class="ball ball-core" title="Inercia Dominical">21</span>
-          <span class="ball ball-normal">23</span>
-          <span class="ball ball-normal" title="Arrastre Tradicional #3425">32</span>
+          <span class="ball ball-normal">01</span>
+          <span class="ball ball-normal">05</span>
+          <span class="ball ball-normal">09</span>
+          <span class="ball ball-normal">12</span>
+          <span class="ball ball-core" title="Ancla Núcleo">23</span>
+          <span class="ball ball-normal">40</span>
         </div>
         <div class="mt-2 text-xs text-gray-500 flex justify-between items-center pt-2 border-t border-gray-100">
-          <span>Enfoque: Matriz Cross-Modal Pool 10, capturando rebotes directos (10, 32) y recuperando resonancia del 21.</span>
-          <button onclick="copiarBoleto('05 - 10 - 14 - 21 - 23 - 32')" class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs">Copiar</button>
+          <span>Enfoque: Cobertura ortogonal máxima, enlace de arrastre con 01-05-23 y captura de atrasos 12 y 40.</span>
+          <button onclick="copiarBoleto('01 - 05 - 09 - 12 - 23 - 40')" class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs">Copiar</button>
+        </div>
+      </div>
+          <span>Enfoque: Cobertura ortogonal máxima, micro-entrelazamiento EPR con 09-10 y tripleta bloqueada 00-06-23 con B1.</span>
+          <button onclick="copiarBoleto('00 - 06 - 09 - 10 - 23 - 31')" class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs">Copiar</button>
         </div>
       </div>
     </div>
@@ -260,9 +294,9 @@
 
   <script>
     const tickets = [
-      [0, 1, 6, 23, 39, 43],
-      [0, 5, 23, 39, 40, 43],
-      [1, 9, 12, 23, 31, 40]
+      [0, 1, 6, 23, 25, 43],
+      [0, 5, 6, 23, 39, 43],
+      [1, 5, 9, 12, 23, 40]
     ];
 
     let selected = new Set();
@@ -343,10 +377,10 @@
 
     function copiarTodo() {
       const txt = 
-`QUINI 6 - SORTEO #3426 (DOMINGO 15/11/2026)
-Boleto 1: 01 - 04 - 05 - 23 - 32 - 43
-Boleto 2: 01 - 05 - 14 - 23 - 31 - 43
-Boleto 3: 05 - 10 - 14 - 21 - 23 - 32
+`QUINI 6 - CUPÓN INTELIGENTE #3426 (DOMINGO 15/11/2026)
+Boleto 1: 00 - 01 - 06 - 23 - 25 - 43
+Boleto 2: 00 - 05 - 06 - 23 - 39 - 43
+Boleto 3: 01 - 05 - 09 - 12 - 23 - 40
 Modalidad: Tradicional + Segunda + Revancha + Siempre Sale
 Inversión: 3 cupones ($12.000 ARS total)`;
       navigator.clipboard.writeText(txt).then(() => {
